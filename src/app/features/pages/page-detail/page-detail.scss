@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+.page-crumb {
+  background: var(--color-bg-body);
+  padding-block-start: var(--space-3xl);
+}
+
+.crumbs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  color: var(--color-text-disabled);
+
+  li + li::before {
+    content: '›';
+    margin-inline-end: var(--space-md);
+    color: var(--color-text-disabled);
+  }
+
+  a {
+    color: var(--color-text-paragraph);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.page-intro {
+  background: var(--color-bg-body);
+  padding-block: var(--space-5xl);
+}
+
+.page-intro__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4xl);
+  flex-wrap: wrap;
+}
+
+.page-intro__text {
+  flex: 1;
+  min-width: 280px;
+
+  h1 {
+    margin: 0 0 var(--space-3xl);
+    padding-inline-start: var(--space-xl);
+    border-inline-start: 3px solid var(--color-primary-600);
+    font-size: var(--display-sm-size);
+    line-height: var(--display-sm-line);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-default);
+  }
+}
+
+.page-intro__summary {
+  margin: 0 0 var(--space-xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-xl-size);
+  line-height: var(--text-xl-line);
+}
+
+.page-intro__body {
+  margin: 0;
+  max-width: 64ch;
+  white-space: pre-line;
+  color: var(--color-text-default);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+// Only pages that actually have a hero image become two columns. The design pairs a 776px text
+// column with a 440px image at a 32px gap, so the text fills its column rather than keeping the
+// single-column reading cap — that cap is what left a gap between the copy and the picture.
+.page-intro__inner--split {
+  .page-intro__text {
+    flex: 1 1 0;
+    min-width: 320px;
+  }
+
+  .page-intro__summary,
+  .page-intro__body {
+    max-width: none;
+  }
+}
+
+.page-intro__figure {
+  // Narrower than the design's 440px so the intro copy keeps more of the row.
+  flex: 0 0 360px;
+  max-width: 100%;
+  margin: 0;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  aspect-ratio: 440 / 249;
+
+  ::ng-deep img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    flex-basis: 100%;
+  }
+}

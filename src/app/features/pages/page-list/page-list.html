@@ -1,0 +1,23 @@
+<section class="container section">
+  <h1>Pages</h1>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (error()) {
+    <p role="alert" class="error">Could not load pages. Please try again later.</p>
+  } @else {
+    <ul class="card-grid">
+      @for (page of pages(); track page.id) {
+        <li class="card">
+          <a [routerLink]="['/pages', page.slug]">{{ page.title }}</a>
+          @if (page.summary) {
+            <p>{{ page.summary }}</p>
+          }
+        </li>
+      }
+      @empty {
+        <li>No pages published yet.</li>
+      }
+    </ul>
+  }
+</section>

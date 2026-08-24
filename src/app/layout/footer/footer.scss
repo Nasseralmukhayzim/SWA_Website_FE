@@ -1,0 +1,196 @@
+// Footer — Figma node 2975:36007.
+.site-footer {
+  background: var(--color-bg-neutral-100);
+  margin-block-start: var(--space-8xl);
+  padding-inline: var(--space-4xl);
+
+  @media (max-width: 640px) {
+    padding-inline: var(--space-xl);
+  }
+}
+
+.site-footer__content {
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding-block: var(--space-5xl) var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5xl);
+}
+
+.site-footer__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xl);
+  padding-block: var(--space-xl) var(--space-5xl);
+}
+
+.site-footer__group {
+  flex: 1 0 0;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.site-footer__group-label {
+  margin: 0;
+  padding-block-end: var(--space-md);
+  border-block-end: 1px solid var(--color-border-neutral);
+  color: var(--color-text-default);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+  font-weight: var(--font-weight-medium);
+}
+
+.site-footer__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    text-decoration: none;
+    color: var(--color-link-neutral);
+    font-size: var(--text-sm-size);
+    line-height: var(--text-sm-line);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.site-footer__link-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.site-footer__social {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.site-footer__icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    border-color: var(--color-border-primary);
+  }
+}
+
+// The design renders the LinkedIn mark full-bleed at 32px with no surrounding button.
+.site-footer__icon-button--bare {
+  border: none;
+
+  img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.site-footer__legal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3xl);
+  padding-block: var(--space-xl);
+}
+
+.site-footer__logos {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xl);
+  flex-shrink: 0;
+}
+
+.site-footer__logo-swa {
+  display: block;
+  width: 90px;
+  height: 71px;
+}
+
+.site-footer__logo-vision {
+  display: block;
+  width: 107px;
+  height: 71px;
+}
+
+// Two exported pieces composited at the geometry the design specifies: the wordmark fills the
+// left 73.69% of the box, the mark sits in the right 19.01%.
+.site-footer__logo-sdaia {
+  position: relative;
+  display: block;
+  width: 106px;
+  height: 42px;
+  opacity: 0.7;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.site-footer__logo-sdaia-wordmark {
+  position: absolute;
+  inset: 0 26.31% 0 0;
+  display: block;
+  width: 73.69%;
+  height: 100%;
+}
+
+.site-footer__logo-sdaia-mark {
+  position: absolute;
+  inset: 0 0 0 80.99%;
+  display: block;
+  width: 19.01%;
+  height: 100%;
+}
+
+.site-footer__legal-info {
+  flex: 1 0 0;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.site-footer__address {
+  margin: 0;
+  color: var(--color-link-neutral);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  text-decoration: underline;
+}
+
+.site-footer__copyright {
+  margin: 0;
+  color: var(--color-text-default);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--font-weight-semibold);
+}

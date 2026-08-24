@@ -1,0 +1,89 @@
+<div class="page-crumb">
+  <nav class="container" [attr.aria-label]="t().crumbLabel">
+    <ol class="crumbs">
+      <li><a routerLink="/">{{ t().home }}</a></li>
+      <li>{{ t().mediaCentre }}</li>
+      <li aria-current="page">{{ t().news }}</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="page-intro">
+  <div class="container">
+    <h1>{{ t().news }}</h1>
+    <p class="page-intro__summary">{{ t().intro }}</p>
+  </div>
+</section>
+
+<section class="section container">
+  <!--
+    The design also shows a "type" dropdown beside the search box. News articles carry no category
+    in the CMS, so there is nothing to populate it with — search is wired up, the dropdown is left
+    out rather than shipped inert.
+  -->
+  <form class="news-filters" role="search" (submit)="$event.preventDefault()">
+    <label class="news-search">
+      <span class="visually-hidden">{{ t().search }}</span>
+      <svg class="news-search__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <circle cx="9" cy="9" r="6" />
+        <path d="m13.5 13.5 3.5 3.5" />
+      </svg>
+      <input
+        class="news-search__input"
+        type="search"
+        [placeholder]="t().searchPlaceholder"
+        [value]="query()"
+        (input)="onSearch($any($event.target).value)"
+      />
+    </label>
+  </form>
+
+  @if (loading()) {
+    <p>{{ t().loading }}</p>
+  } @else if (error()) {
+    <p role="alert" class="error">{{ t().error }}</p>
+  } @else {
+    <ul class="news-grid">
+      @for (item of visible(); track item.id) {
+        <li class="news-card">
+          <figure class="news-card__figure">
+            <app-media-image [mediaId]="item.heroImageId" variant="image" [alt]="item.title" />
+          </figure>
+          <h2 class="news-card__title">
+            <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
+          </h2>
+          @if (item.summary) {
+            <p class="news-card__summary">{{ item.summary }}</p>
+          }
+          <p class="news-card__date"><span class="tag">{{ formatDate(item) }}</span></p>
+          <a class="news-card__more" [routerLink]="['/news', item.slug]">{{ t().readMore }}</a>
+        </li>
+      }
+      @empty {
+        <li class="news-empty">{{ all().length ? t().noMatch : t().empty }}</li>
+      }
+    </ul>
+
+    @if (totalPages() > 1) {
+      <nav class="pager" [attr.aria-label]="t().pagination">
+        <button type="button" class="pager__step" [disabled]="page() === 1" (click)="goTo(page() - 1)">
+          <span class="visually-hidden">{{ t().previous }}</span>
+          <span aria-hidden="true">‹</span>
+        </button>
+        @for (p of pages(); track p) {
+          <button
+            type="button"
+            class="pager__page"
+            [class.pager__page--current]="p === page()"
+            [attr.aria-current]="p === page() ? 'page' : null"
+            (click)="goTo(p)"
+          >{{ p }}</button>
+        }
+        <button type="button" class="pager__step" [disabled]="page() === totalPages()" (click)="goTo(page() + 1)">
+          <span class="visually-hidden">{{ t().next }}</span>
+          <span aria-hidden="true">›</span>
+        </button>
+      </nav>
+    }
+  }
+</section>

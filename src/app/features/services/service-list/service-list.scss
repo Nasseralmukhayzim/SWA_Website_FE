@@ -1,0 +1,356 @@
+:host {
+  display: block;
+}
+
+.page-crumb {
+  background: var(--color-bg-body);
+  padding-block-start: var(--space-3xl);
+}
+
+.crumbs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  color: var(--color-text-disabled);
+
+  li + li::before {
+    content: '›';
+    margin-inline-end: var(--space-md);
+    color: var(--color-text-disabled);
+  }
+
+  a {
+    color: var(--color-text-paragraph);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.page-intro {
+  background: var(--color-bg-body);
+  padding-block: var(--space-5xl);
+
+  h1 {
+    margin: 0 0 var(--space-3xl);
+    padding-inline-start: var(--space-xl);
+    border-inline-start: 3px solid var(--color-primary-600);
+    font-size: var(--display-sm-size);
+    line-height: var(--display-sm-line);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-default);
+  }
+}
+
+.page-intro__summary {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+// Content switcher: a centred segmented control, 48px tall, rounded on the outer edges only.
+// Logical border-radius keeps the rounded ends on the correct side in both directions.
+.switcher {
+  display: flex;
+  justify-content: center;
+  margin-block-end: var(--space-5xl);
+}
+
+.switcher__item {
+  min-width: 76px;
+  height: 48px;
+  padding-inline: var(--space-xl);
+  border: 0;
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-xl-size);
+  line-height: var(--text-xl-line);
+  cursor: pointer;
+
+  & + & {
+    border-inline-start: 0.5px solid var(--color-border-neutral);
+  }
+
+  &:first-child {
+    border-start-start-radius: var(--radius-md);
+    border-end-start-radius: var(--radius-md);
+  }
+
+  &:last-child {
+    border-start-end-radius: var(--radius-md);
+    border-end-end-radius: var(--radius-md);
+  }
+
+  &:hover:not(.switcher__item--active) {
+    background: var(--color-bg-neutral-200);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+    z-index: 1;
+  }
+}
+
+.switcher__item--active {
+  background: var(--color-bg-black);
+  color: var(--color-text-oncolor);
+  border-inline-start-color: transparent;
+}
+
+// Category chips: pills carrying the number of services behind each one.
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4xl);
+  margin-block-end: var(--space-5xl);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  height: 48px;
+  padding-inline: var(--space-lg);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover:not(.chip--selected) {
+    background: var(--color-bg-neutral-200);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+  }
+}
+
+.chip--selected {
+  background: var(--color-bg-neutral-700);
+  color: var(--color-text-oncolor);
+}
+
+.chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding-inline: var(--space-md);
+  border: 1px solid var(--color-border-neutral-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-50);
+  color: var(--color-text-display);
+  font-size: var(--text-2xs-size);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+
+  // The selected chip rounds its badge fully, per the design.
+  .chip--selected & {
+    border-radius: var(--radius-full);
+  }
+}
+
+// Activity row: search and the labelled tab list share one line across the full width. The tab
+// list takes whatever the search does not, so the rail always reaches both edges.
+.activity {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4xl);
+  width: 100%;
+  margin-block-end: var(--space-5xl);
+}
+
+.activity__tabs {
+  flex: 1 1 auto;
+  // Hold the tab row's own width so the search field gives up space first, rather than the tabs
+  // being squeezed until they spill.
+  min-width: min-content;
+}
+
+.activity__search {
+  flex: 0 1 443px;
+  min-width: 180px;
+}
+
+.activity__label {
+  margin: 0 0 var(--space-xl);
+  text-align: start;
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-default);
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search__icon {
+  position: absolute;
+  // The design seats the magnifier on the field's reading edge, not the trailing one.
+  inset-inline-start: var(--space-xl);
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-disabled);
+  pointer-events: none;
+}
+
+.search__input {
+  width: 100%;
+  height: 48px;
+  padding-inline: calc(var(--space-xl) * 2 + 20px) var(--space-md);
+  border: 1px solid var(--color-border-neutral-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-white);
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-sm-size);
+
+  &::placeholder {
+    color: var(--color-text-placeholder);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 1px;
+  }
+}
+
+// Tabs sit on a shared 3px rail; the active one paints its own segment green.
+.tabs {
+  display: flex;
+  align-items: center;
+  // One row: the tabs tighten their padding and the search gives up width before anything
+  // wraps. Only the phone breakpoint below lets them fall onto a second line.
+  flex-wrap: nowrap;
+  width: 100%;
+  border-block-end: 3px solid var(--color-border-neutral-secondary);
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding-block: var(--space-xl);
+  // Full 16px at desktop, tightening as the row narrows so the longest label stays on the line.
+  padding-inline: clamp(var(--space-md), 1.1vw, var(--space-xl));
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-paragraph);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover:not(.tab--active) {
+    color: var(--color-text-default);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: -2px;
+  }
+}
+
+.tab--active {
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-bold);
+
+  // The design insets the selector by the tab's own padding, so it tracks the label width.
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: clamp(var(--space-md), 1.1vw, var(--space-xl));
+    bottom: -3px;
+    height: 3px;
+    border-radius: var(--radius-full);
+    background: var(--color-border-primary);
+  }
+}
+
+.tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-info-50);
+  color: var(--color-text-info);
+  font-size: var(--text-2xs-size);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+
+// Service card: the mark sits above the title, as a 48px medallion.
+.service-card {
+  gap: var(--space-3xl);
+}
+
+.service-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-neutral-100);
+
+  ::ng-deep img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+}
+
+.card-empty {
+  grid-column: 1 / -1;
+  color: var(--color-text-paragraph);
+}
+
+@media (max-width: 900px) {
+  .activity {
+    gap: var(--space-xl);
+  }
+}
+
+// Phones: no room for a 180px field beside the tabs, so stack and let the tabs wrap.
+@media (max-width: 760px) {
+  .activity {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activity__search {
+    flex: none;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+}

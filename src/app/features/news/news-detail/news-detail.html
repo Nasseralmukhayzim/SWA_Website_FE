@@ -1,0 +1,31 @@
+@if (loading()) {
+  <p class="container">Loading…</p>
+} @else if (notFound()) {
+  <div class="container section">
+    <p role="alert" class="error">This article could not be found.</p>
+    <a routerLink="/news">Back to news</a>
+  </div>
+} @else if (article(); as a) {
+  <div class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a routerLink="/news">News</a> / {{ a.title }}</p>
+      <h1>{{ a.title }}</h1>
+      <p class="meta">{{ a.createdAtUtc | date }}</p>
+      @if (a.summary) {
+        <p class="summary">{{ a.summary }}</p>
+      }
+    </div>
+  </div>
+
+  <article class="container section">
+    @if (a.heroImageId) {
+      <figure class="hero-figure">
+        <app-media-image [mediaId]="a.heroImageId" variant="hero" [alt]="a.title" />
+        @if (a.heroImageCaption) {
+          <figcaption class="caption">{{ a.heroImageCaption }}</figcaption>
+        }
+      </figure>
+    }
+    <div class="body">{{ a.body }}</div>
+  </article>
+}

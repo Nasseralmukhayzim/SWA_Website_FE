@@ -1,0 +1,103 @@
+<section class="page-section" [class.page-section--tinted]="tinted()">
+  <div class="container">
+    @if (isSplit()) {
+      <!--
+        Split section: the heading belongs inside the text column here, not above the whole block,
+        so it lines up with the top of the image the way the design has it.
+      -->
+      @for (item of section().items; track $index) {
+        <div class="split">
+          <div class="split__text">
+            @if (section().heading) {
+              <h2>{{ section().heading }}</h2>
+            }
+            @if (section().intro) {
+              <p class="section-intro">{{ section().intro }}</p>
+            }
+            @if (item.description) {
+              <div class="rich-text" [innerHTML]="item.description"></div>
+            }
+          </div>
+          <figure class="split__figure">
+            <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
+          </figure>
+        </div>
+      }
+    } @else {
+      @if (section().heading) {
+        <h2>{{ section().heading }}</h2>
+      }
+      @if (section().intro) {
+        <p class="section-intro">{{ section().intro }}</p>
+      }
+      <!--
+        Body and item descriptions are authored in the CMS rich text editor, so they arrive as HTML.
+        Binding through innerHTML lets Angular's sanitizer strip anything unsafe; interpolating them
+        would print the markup as literal text.
+      -->
+      @if (section().body) {
+        <div class="body rich-text" [innerHTML]="section().body"></div>
+      }
+
+      @switch (section().kind) {
+        @case ('StatGroup') {
+          <dl class="stat-grid">
+            @for (item of section().items; track $index) {
+              <div class="stat">
+                @if (item.iconId) {
+                  <div class="stat-icon">
+                    <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                  </div>
+                }
+                <dt class="stat-value">{{ item.title }}</dt>
+                <dd class="stat-label rich-text" [innerHTML]="item.description"></dd>
+              </div>
+            }
+          </dl>
+        }
+        @case ('Timeline') {
+          <ol class="timeline">
+            @for (item of section().items; track $index) {
+              <li>
+                <strong>{{ item.title }}</strong>
+                <div class="timeline-label rich-text" [innerHTML]="item.description"></div>
+              </li>
+            }
+          </ol>
+        }
+        @default {
+          <ul class="card-grid" [class.card-grid--feature]="variant() === 'feature'">
+            @for (item of section().items; track $index) {
+              <li class="card" [class.card--feature]="variant() === 'feature'">
+                @if (item.imageId) {
+                  <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
+                }
+                @if (variant() === 'feature') {
+                  @if (item.iconId) {
+                    <span class="card-logo">
+                      <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                    </span>
+                  }
+                  <span class="card-title">{{ item.title }}</span>
+                } @else {
+                  <div class="card-heading">
+                    @if (item.iconId) {
+                      <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                    }
+                    <span class="card-title">{{ item.title }}</span>
+                  </div>
+                }
+                @if (item.description) {
+                  <div class="card-body rich-text" [innerHTML]="item.description"></div>
+                }
+                @if (item.linkUrl) {
+                  <a [href]="item.linkUrl">Learn more</a>
+                }
+              </li>
+            }
+          </ul>
+        }
+      }
+    }
+  </div>
+</section>

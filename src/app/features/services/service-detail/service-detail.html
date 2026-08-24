@@ -1,0 +1,136 @@
+@if (loading()) {
+  <p class="container section">{{ t().loading }}</p>
+} @else if (notFound()) {
+  <div class="container section">
+    <p role="alert" class="error">{{ t().notFound }}</p>
+    <a routerLink="/services">{{ t().back }}</a>
+  </div>
+} @else if (service(); as s) {
+  <section class="service-hero">
+    <div class="container service-hero__inner">
+      <div class="service-hero__main">
+        <p class="breadcrumb"><a routerLink="/services">{{ t().services }}</a> / {{ s.name }}</p>
+
+        <div class="service-hero__title">
+          @if (s.iconId) {
+            <app-media-image [mediaId]="s.iconId" variant="icon" [alt]="''" />
+          }
+          <h1>{{ s.name }}</h1>
+        </div>
+
+        @if (s.audienceNames.length) {
+          <ul class="chips">
+            @for (audience of s.audienceNames; track audience) {
+              <li class="chip">{{ audience }}</li>
+            }
+          </ul>
+        }
+
+        @if (s.description) {
+          <p class="service-hero__description">{{ s.description }}</p>
+        }
+      </div>
+
+      @if (s.startServiceUrl) {
+        <a class="service-hero__cta" [href]="s.startServiceUrl" target="_blank" rel="noopener noreferrer">
+          {{ ctaLabel() }}
+        </a>
+      }
+    </div>
+  </section>
+
+  <div class="container service-body">
+    <article class="service-body__main">
+      @if (tabs().length) {
+        <div class="tabs" role="tablist">
+          @for (tab of tabs(); track tab.key) {
+            <button
+              type="button"
+              role="tab"
+              class="tabs__tab"
+              [class.is-active]="tab.key === activeTab()?.key"
+              [attr.aria-selected]="tab.key === activeTab()?.key ? 'true' : 'false'"
+              (click)="selectTab(tab.key)"
+            >
+              {{ tab.label }}
+            </button>
+          }
+        </div>
+
+        @if (activeTab(); as tab) {
+          <div class="tabs__panel" role="tabpanel">
+            @if (tab.key === 'steps') {
+              <ol class="steps">
+                @for (line of tab.lines; track $index) {
+                  <li>{{ line }}</li>
+                }
+              </ol>
+            } @else {
+              <ul class="bullets">
+                @for (line of tab.lines; track $index) {
+                  <li>{{ line }}</li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      }
+    </article>
+
+    <aside class="service-body__aside">
+      <div class="service-card">
+        @for (fact of facts(); track fact.label) {
+          <div class="fact">
+            <span class="fact__icon" aria-hidden="true">
+              @switch (fact.icon) {
+                @case ('audience') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M4.5 19.5a7.5 7.5 0 0 1 15 0" />
+                  </svg>
+                }
+                @case ('duration') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="8.5" />
+                    <path d="M12 7.5V12l3 2" />
+                  </svg>
+                }
+                @case ('channels') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4.5" width="18" height="12" rx="2" />
+                    <path d="M8.5 20h7" />
+                  </svg>
+                }
+                @case ('fee') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="8.5" />
+                    <path d="M12 7.5v9M9.75 10.25h4.5M9.75 13.75h4.5" />
+                  </svg>
+                }
+                @case ('phone') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4Z" />
+                  </svg>
+                }
+              }
+            </span>
+            <div class="fact__text">
+              <p class="fact__label">{{ fact.label }}</p>
+              <p class="fact__value">{{ fact.value }}</p>
+            </div>
+          </div>
+        }
+
+        @if (guideUrl(); as url) {
+          <a class="service-card__guide" [href]="url" target="_blank" rel="noopener noreferrer">{{ t().guide }}</a>
+        }
+      </div>
+    </aside>
+  </div>
+
+  @if (s.updatedAtUtc) {
+    <div class="container service-updated">
+      <p>{{ t().lastModified }}: {{ s.updatedAtUtc | date: 'longDate' }}</p>
+    </div>
+  }
+}

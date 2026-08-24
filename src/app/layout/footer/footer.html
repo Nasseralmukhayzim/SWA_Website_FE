@@ -1,0 +1,72 @@
+<footer class="site-footer">
+  <div class="site-footer__content">
+    <div class="site-footer__groups">
+      @for (group of groups(); track group.heading) {
+        <div class="site-footer__group">
+          <h2 class="site-footer__group-label">{{ group.heading }}</h2>
+          <ul class="site-footer__links">
+            @for (link of group.links; track link.label) {
+              <li>
+                @if (link.routerLink) {
+                  <a [routerLink]="link.routerLink">{{ link.label }}</a>
+                } @else {
+                  <a [href]="link.href" target="_blank" rel="noopener noreferrer">
+                    <img class="site-footer__link-icon" src="/brand/icon-external-link.svg" alt="" />
+                    <span>{{ link.label }}</span>
+                  </a>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <div class="site-footer__group">
+        <h2 class="site-footer__group-label">{{ socialHeading() }}</h2>
+        <ul class="site-footer__social">
+          @for (channel of socialChannels; track channel.name) {
+            <li>
+              @if (channel.url) {
+                <a
+                  class="site-footer__icon-button"
+                  [class.site-footer__icon-button--bare]="channel.bare"
+                  [href]="channel.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [attr.aria-label]="channel.name"
+                >
+                  <img [src]="channel.icon" alt="" />
+                </a>
+              } @else {
+                <span
+                  class="site-footer__icon-button"
+                  [class.site-footer__icon-button--bare]="channel.bare"
+                  role="img"
+                  [attr.aria-label]="channel.name"
+                >
+                  <img [src]="channel.icon" alt="" />
+                </span>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__legal">
+      <div class="site-footer__logos">
+        <img class="site-footer__logo-swa" src="/brand/logo-swa-lockup.svg" [alt]="authorityName()" />
+        <img class="site-footer__logo-vision" src="/brand/logo-vision-2030.svg" alt="Saudi Vision 2030" />
+        <a class="site-footer__logo-sdaia" href="https://sdaia.gov.sa" target="_blank" rel="noopener noreferrer" aria-label="SDAIA">
+          <img class="site-footer__logo-sdaia-wordmark" src="/brand/logo-sdaia-wordmark.svg" alt="" />
+          <img class="site-footer__logo-sdaia-mark" src="/brand/logo-sdaia-mark.svg" alt="" />
+        </a>
+      </div>
+
+      <div class="site-footer__legal-info">
+        <p class="site-footer__address">{{ address() }}</p>
+        <p class="site-footer__copyright">{{ copyright() }}</p>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,217 @@
+// Service detail template. Everything uses logical properties so the layout mirrors for Arabic
+// without a direction-specific rule.
+
+.service-hero {
+  background: var(--color-primary-100);
+  border-block-end: 1px solid var(--color-border-neutral);
+  padding-block: var(--space-4xl);
+}
+
+.service-hero__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4xl);
+  flex-wrap: wrap;
+}
+
+.service-hero__main {
+  flex: 1;
+  min-width: 280px;
+}
+
+.service-hero__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.service-hero__description {
+  margin-block: var(--space-xl) 0;
+  max-width: 70ch;
+  color: var(--color-text-paragraph);
+}
+
+.service-hero__cta {
+  flex-shrink: 0;
+  display: inline-block;
+  background: var(--color-primary-600);
+  color: var(--color-text-oncolor);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-lg) var(--space-4xl);
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    background: var(--color-primary-800);
+  }
+}
+
+.chips {
+  list-style: none;
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.chip {
+  background: var(--color-primary-600);
+  color: var(--color-text-oncolor);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-lg);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
+.service-body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4xl);
+  padding-block: var(--space-4xl);
+  flex-wrap: wrap;
+}
+
+.service-body__main {
+  flex: 1;
+  min-width: 300px;
+}
+
+.service-body__aside {
+  flex: 0 0 340px;
+
+  @media (max-width: 900px) {
+    flex-basis: 100%;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-4xl);
+  flex-wrap: wrap;
+  border-block-end: 1px solid var(--color-border-neutral);
+}
+
+.tabs__tab {
+  background: none;
+  border: none;
+  border-block-end: 3px solid transparent;
+  margin-block-end: -1px;
+  padding: var(--space-md) 0;
+  cursor: pointer;
+  font-family: var(--font-family-text);
+  font-size: var(--text-md-size);
+  color: var(--color-text-paragraph);
+
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &.is-active {
+    color: var(--color-text-display);
+    font-weight: var(--font-weight-semibold);
+    border-block-end-color: var(--color-primary-600);
+  }
+}
+
+.tabs__panel {
+  padding-block-start: var(--space-3xl);
+}
+
+.steps,
+.bullets {
+  margin: 0;
+  padding-inline-start: var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  color: var(--color-text-paragraph);
+
+  li {
+    padding-inline-start: var(--space-md);
+  }
+}
+
+.steps li::marker {
+  color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
+}
+
+.service-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+}
+
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.fact__icon {
+  flex-shrink: 0;
+  color: var(--color-primary-600);
+
+  svg {
+    display: block;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.fact__text {
+  min-width: 0;
+}
+
+.fact__label {
+  margin: 0 0 var(--space-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-display);
+  font-size: var(--text-md-size);
+}
+
+.fact__value {
+  margin: 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
+.service-card__guide {
+  display: block;
+  text-align: center;
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  padding: var(--space-lg) var(--space-xl);
+  text-decoration: none;
+  color: var(--color-text-default);
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+
+  &:hover {
+    border-color: var(--color-border-primary);
+    color: var(--color-primary-600);
+  }
+}
+
+.service-updated {
+  padding-block-end: var(--space-4xl);
+
+  p {
+    margin: 0;
+    padding-block-start: var(--space-xl);
+    border-block-start: 1px solid var(--color-border-neutral);
+    color: var(--color-text-paragraph);
+    font-size: var(--text-sm-size);
+  }
+}

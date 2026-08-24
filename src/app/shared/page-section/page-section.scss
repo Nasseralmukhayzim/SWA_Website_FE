@@ -1,0 +1,286 @@
+:host {
+  display: block;
+}
+
+.page-section {
+  padding-block: var(--space-5xl);
+
+  // Section titles carry a short accent rule on the leading edge, per the content-page design.
+  h2 {
+    margin-block-end: var(--space-md);
+    padding-inline-start: var(--space-xl);
+    border-inline-start: 3px solid var(--color-primary-600);
+  }
+}
+
+.page-section--tinted {
+  background: var(--color-bg-info-25);
+}
+
+.section-intro {
+  color: var(--color-text-paragraph);
+  max-width: 720px;
+  margin-block-end: var(--space-3xl);
+}
+
+.body {
+  color: var(--color-text-paragraph);
+}
+
+// Rich text arrives from the CMS editor as real markup, so the block elements it emits need to
+// inherit the surrounding typography rather than the browser defaults. `white-space` stays normal
+// here — the markup, not newlines, carries the structure now.
+.rich-text {
+  :first-child {
+    margin-block-start: 0;
+  }
+
+  :last-child {
+    margin-block-end: 0;
+  }
+
+  p {
+    margin-block: 0 var(--space-md);
+    color: inherit;
+    font-size: inherit;
+  }
+
+  ul,
+  ol {
+    margin-block: 0 var(--space-md);
+    padding-inline-start: var(--space-3xl);
+  }
+
+  a {
+    color: var(--color-primary-600);
+  }
+}
+
+.stat-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-xl);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.stat {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3xl) var(--space-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stat-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-end: var(--space-md);
+
+  ::ng-deep img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.stat-value {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--display-xs-size);
+  line-height: var(--display-xs-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-600);
+}
+
+.stat-label {
+  margin: 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+}
+
+.card-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3xl);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+// The design lays feature cards three to a row (406px within a 1280px container).
+.card-grid--feature {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.card-title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-display);
+  font-size: var(--text-md-size);
+}
+
+// Feature card — content-page treatment: the item's mark sits at the top, then a bold title and
+// the body, all aligned to the reading edge.
+.card--feature {
+  gap: var(--space-3xl);
+
+  .card-title {
+    font-size: var(--text-lg-size);
+    line-height: var(--text-lg-line);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .card-body,
+  p {
+    font-size: var(--text-md-size);
+    line-height: var(--text-md-line);
+    color: var(--color-text-display);
+  }
+
+  // Some feature cards lead with a still from the campaign instead of a pictogram — the awareness
+  // materials, for one. The design runs those the full card width at 250px.
+  ::ng-deep .media-image--image,
+  ::ng-deep .media-image-placeholder--image {
+    height: 250px;
+  }
+}
+
+// The marks are program logos as often as they are pictograms, so the box fixes height only and
+// lets width follow the artwork rather than squashing wide lockups into a square.
+.card-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 64px;
+
+  ::ng-deep img {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+// Split section: prose on the wide side, a fixed-width image opposite. The design sizes these at
+// 440px and 808px inside a 1280px container, so the figure gets a fixed basis and the text takes
+// the rest. Logical order (text first) puts the image on the correct side in both directions.
+.split {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4xl);
+}
+
+.split__text {
+  flex: 1 1 0;
+  min-width: 0;
+  color: var(--color-text-default);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+
+  h2 {
+    margin-block-start: 0;
+  }
+}
+
+.split__figure {
+  flex: 0 0 440px;
+  max-width: 100%;
+  margin: 0;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: 100%;
+    height: 249px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+// Stacked on narrow screens, where 440px beside prose no longer fits.
+@media (max-width: 900px) {
+  .split {
+    flex-direction: column;
+  }
+
+  .split__figure {
+    flex-basis: auto;
+    width: 100%;
+  }
+}
+
+.card p {
+  margin: 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+}
+
+.card-body {
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+}
+
+.card a {
+  color: var(--color-primary-600);
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4xl);
+  border-block-start: 2px solid var(--color-border-neutral);
+  padding-block-start: var(--space-3xl);
+
+  li {
+    flex: 1;
+    min-width: 120px;
+    padding-inline-start: var(--space-xl);
+    border-inline-start: 3px solid var(--color-primary-600);
+  }
+
+  strong {
+    display: block;
+    font-size: var(--text-xl-size);
+    color: var(--color-primary-600);
+  }
+
+  span,
+  .timeline-label {
+    color: var(--color-text-paragraph);
+    font-size: var(--text-sm-size);
+  }
+}

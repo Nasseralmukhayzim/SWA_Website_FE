@@ -1,0 +1,38 @@
+<section class="container section">
+  <h1>Events</h1>
+
+  <div class="filters">
+    <button type="button" [class.active]="upcomingFilter() === null" (click)="setUpcomingFilter(null)">All</button>
+    <button type="button" [class.active]="upcomingFilter() === true" (click)="setUpcomingFilter(true)">Upcoming</button>
+    <button type="button" [class.active]="upcomingFilter() === false" (click)="setUpcomingFilter(false)">Past</button>
+  </div>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (error()) {
+    <p role="alert" class="error">Could not load events. Please try again later.</p>
+  } @else {
+    <ul class="card-grid">
+      @for (item of items(); track item.id) {
+        <li class="card">
+          @if (item.imageId) {
+            <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
+          }
+          <a [routerLink]="['/events', item.slug]">{{ item.title }}</a>
+          <p class="meta">{{ item.startsAtUtc | date: 'medium' }} @if (item.location) { · {{ item.location }} }</p>
+        </li>
+      }
+      @empty {
+        <li>
+          @if (upcomingFilter() === true) {
+            No upcoming events.
+          } @else if (upcomingFilter() === false) {
+            No past events.
+          } @else {
+            No events yet.
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,61 @@
+.hero {
+  // Match the site's standard content width (same as .container elsewhere) instead of the
+  // photo's full native 1440px, so the hero aligns with the rest of the page below it.
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  height: 360px;
+  // Physical "right" (not center) — the photo's own baked-in Arabic branding sits in its right
+  // third, so a center crop on narrow viewports was cutting the text off. Biasing right keeps
+  // it in frame at any width, at the cost of cropping more of the plain water on the left.
+  background: url('/brand/hero.png') right center / cover no-repeat;
+
+  @media (max-width: 640px) {
+    height: 220px;
+  }
+}
+
+.about p {
+  color: var(--color-text-paragraph);
+  max-width: 900px;
+  margin: 0;
+}
+
+.section-lead {
+  color: var(--color-text-paragraph);
+  max-width: 900px;
+  margin: 0 0 var(--space-3xl);
+}
+
+.tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tag {
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--text-xs-size);
+  color: var(--color-text-paragraph);
+}
+
+.access-service {
+  align-self: flex-start;
+  margin-block-start: auto;
+  background: var(--color-bg-black);
+  color: var(--color-text-oncolor);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-sm-size);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    opacity: 0.85;
+    color: var(--color-text-oncolor);
+  }
+}

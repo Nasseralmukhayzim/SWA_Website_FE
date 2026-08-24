@@ -1,0 +1,51 @@
+@if (loading()) {
+  <p class="container section">Loading…</p>
+} @else if (notFound()) {
+  <div class="container section">
+    <p role="alert" class="error">This page could not be found.</p>
+    <a routerLink="/pages">Back to pages</a>
+  </div>
+} @else if (page(); as p) {
+  <div class="page-crumb">
+    <nav class="container" [attr.aria-label]="crumbLabel()">
+      <ol class="crumbs">
+        <li><a routerLink="/">{{ crumbHome() }}</a></li>
+        <li><a routerLink="/pages">{{ crumbAbout() }}</a></li>
+        <li aria-current="page">{{ p.title }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!--
+    Intro follows the design's split: title and body on one side, a rounded image on the other.
+    Pages without a hero image simply run the text full width rather than leaving a gap.
+  -->
+  <section class="page-intro">
+    <div class="container page-intro__inner" [class.page-intro__inner--split]="p.heroImageId">
+      <div class="page-intro__text">
+        <h1>{{ p.title }}</h1>
+        @if (p.summary) {
+          <p class="page-intro__summary">{{ p.summary }}</p>
+        }
+        @if (bodyText(); as body) {
+          <p class="page-intro__body">{{ body }}</p>
+        }
+      </div>
+
+      @if (p.heroImageId) {
+        <figure class="page-intro__figure">
+          <app-media-image [mediaId]="p.heroImageId" variant="hero" [alt]="p.title" />
+        </figure>
+      }
+    </div>
+  </section>
+
+  @for (section of p.sections; track $index) {
+    <app-page-section [section]="section" [tinted]="$index % 2 === 1" variant="feature" />
+  }
+
+  <!-- The Contact Us design carries a form, which is not something the CMS can express as a section. -->
+  @if (showContactForm()) {
+    <app-contact-form />
+  }
+}

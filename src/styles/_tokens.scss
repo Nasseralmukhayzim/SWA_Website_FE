@@ -1,0 +1,101 @@
+// Design tokens pulled from Figma (file If82HrQWfyPXhqokWqJfBI) via get_variable_defs.
+// Matches the Saudi DGA design system (design.dga.gov.sa) this file is built on.
+:root {
+  // Brand / primary (Colors/Primary-SA-Flag)
+  --color-primary-100: #dff6e7;
+  --color-primary-400: #54c08a;
+  --color-primary-600: #1b8354;
+  --color-primary-800: #14573a;
+
+  // Text
+  --color-text-default: #161616;
+  --color-text-display: #1f2a37;
+  --color-text-paragraph: #384250;
+  --color-text-disabled: #9da4ae;
+  // Form/field-text-placeholder
+  --color-text-placeholder: #6c737f;
+  --color-text-oncolor: #ffffff;
+  --color-link-neutral: #384250;
+  // Tag/tag-text-info — the count badges on the activity tabs
+  --color-text-info: #1849a9;
+
+  // Backgrounds
+  --color-bg-body: #f9fafb;
+  --color-bg-white: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-menu: #ffffff;
+  --color-bg-neutral-100: #f3f4f6;
+  --color-bg-neutral-200: #e5e7eb;
+  --color-bg-info-25: #f5faff;
+  // Tag/tag-background-info-light — activity tab count badges
+  --color-bg-info-50: #eff8ff;
+  --color-bg-dark: #141b34;
+  --color-bg-black: #0d121c;
+  --color-bg-neutral-50: #f9fafb;
+  // Chip/chip-background-neutral-selected
+  --color-bg-neutral-700: #384250;
+
+  // Borders
+  --color-border-neutral: #d2d6db;
+  --color-border-neutral-secondary: #e5e7eb;
+  --color-border-primary: #1b8354;
+
+  // Icon
+  --color-icon-default: #161616;
+  --color-icon-neutral: #384250;
+  --color-icon-primary: #1b8354;
+  --color-icon-oncolor: #ffffff;
+
+  // Typography
+  --font-family-text: 'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif;
+  --font-family-display: 'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif;
+
+  --text-2xs-size: 0.625rem; // 10
+  --text-2xs-line: 0.875rem; // 14
+  --text-xs-size: 0.75rem; // 12
+  --text-xs-line: 1.125rem; // 18
+  --text-sm-size: 0.875rem; // 14
+  --text-sm-line: 1.25rem; // 20
+  --text-md-size: 1rem; // 16
+  --text-md-line: 1.5rem; // 24
+  --text-lg-size: 1.125rem; // 18
+  --text-lg-line: 1.75rem; // 28
+  --text-xl-size: 1.25rem; // 20
+  --text-xl-line: 1.875rem; // 30
+
+  --display-xs-size: 1.5rem; // 24
+  --display-xs-line: 2rem; // 32
+  --display-sm-size: 1.875rem; // 30
+  --display-sm-line: 2.375rem; // 38
+  --display-md-size: 2.25rem; // 36
+  --display-md-line: 2.75rem; // 44
+  --display-lg-size: 3rem; // 48
+  --display-lg-line: 3.75rem; // 60
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  // Spacing scale
+  --space-none: 0;
+  --space-xs: 0.25rem; // 4
+  --space-sm: 0.375rem; // 6
+  --space-md: 0.5rem; // 8
+  --space-lg: 0.75rem; // 12
+  --space-xl: 1rem; // 16
+  --space-3xl: 1.5rem; // 24
+  --space-4xl: 2rem; // 32
+  --space-5xl: 2.5rem; // 40
+  --space-8xl: 5rem; // 80
+
+  // Radius
+  --radius-sm: 0.25rem; // 4
+  --radius-md: 0.5rem; // 8
+  --radius-lg: 1rem; // 16
+  --radius-xl: 1.5rem; // 24
+  --radius-full: 9999px;
+
+  // Layout
+  --container-max-width: 1280px;
+}

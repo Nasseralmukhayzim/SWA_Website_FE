@@ -1,0 +1,27 @@
+<section class="container section">
+  <h1>Frequently Asked Questions</h1>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (error()) {
+    <p role="alert" class="error">Could not load FAQs. Please try again later.</p>
+  } @else {
+    @for (group of groups(); track group.categoryName) {
+      <section class="faq-group">
+        <h2>{{ group.categoryName }}</h2>
+        @for (faq of group.faqs; track faq.id) {
+          <div class="faq-item">
+            <button type="button" class="faq-item__question" (click)="toggle(faq.id)" [attr.aria-expanded]="openId() === faq.id">
+              {{ faq.question }}
+            </button>
+            @if (openId() === faq.id) {
+              <div class="faq-item__answer">{{ faq.answer }}</div>
+            }
+          </div>
+        }
+      </section>
+    } @empty {
+      <p>No FAQs published yet.</p>
+    }
+  }
+</section>

@@ -1,0 +1,44 @@
+<section class="hero"></section>
+
+@if (error()) {
+  <p role="alert" class="error container">Something went wrong loading this page's content. Please try again later.</p>
+}
+
+@if (homePage(); as home) {
+  <section class="section container about">
+    <div class="section-header">
+      <h2>{{ aboutHeading() }}</h2>
+      <a class="section-header__link" routerLink="/pages">More →</a>
+    </div>
+    <p>{{ home.body }}</p>
+  </section>
+
+  @for (section of home.sections; track $index) {
+    <app-page-section [section]="section" [tinted]="$index % 2 === 1" />
+  }
+}
+
+<section class="section container">
+  <div class="section-header">
+    <h2>Latest News</h2>
+    <a class="section-header__link" routerLink="/news">View all news →</a>
+  </div>
+  @if (!loading()) {
+    <ul class="card-grid">
+      @for (item of latestNews(); track item.id) {
+        <li class="card">
+          <app-media-image [mediaId]="item.heroImageId" variant="image" [alt]="item.title" />
+          <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
+          @if (item.summary) {
+            <p>{{ item.summary }}</p>
+          }
+          <p class="meta">{{ item.createdAtUtc | date }}</p>
+          <a class="access-service" [routerLink]="['/news', item.slug]">Read More</a>
+        </li>
+      }
+      @empty {
+        <li>No news yet.</li>
+      }
+    </ul>
+  }
+</section>

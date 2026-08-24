@@ -1,0 +1,40 @@
+@if (loading()) {
+  <p class="container">Loading…</p>
+} @else if (notFound()) {
+  <div class="container section">
+    <p role="alert" class="error">This document could not be found.</p>
+    <a routerLink="/documents">Back to documents</a>
+  </div>
+} @else if (document(); as d) {
+  <div class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a routerLink="/documents">Documents</a> / {{ d.title }}</p>
+      <h1>{{ d.title }}</h1>
+      <p class="meta">
+        @if (d.categoryName) {
+          {{ d.categoryName }}
+        }
+        @if (d.year) {
+          · {{ d.year }}
+        }
+      </p>
+    </div>
+  </div>
+
+  <article class="container section">
+    @if (d.coverImageId) {
+      <figure class="hero-figure">
+        <app-media-image [mediaId]="d.coverImageId" variant="hero" [alt]="d.title" />
+      </figure>
+    }
+    @if (d.description) {
+      <div class="body">{{ d.description }}</div>
+    }
+
+    @if (file(); as f) {
+      <a class="cta" [href]="f.url" target="_blank" rel="noopener">Download</a>
+    } @else if (d.externalFileUrl) {
+      <a class="cta" [href]="d.externalFileUrl" target="_blank" rel="noopener">Download</a>
+    }
+  </article>
+}

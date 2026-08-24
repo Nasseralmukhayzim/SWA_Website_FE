@@ -1,0 +1,232 @@
+:host {
+  display: block;
+}
+
+.page-crumb {
+  background: var(--color-bg-body);
+  padding-block-start: var(--space-3xl);
+}
+
+.crumbs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  color: var(--color-text-disabled);
+
+  li + li::before {
+    content: '›';
+    margin-inline-end: var(--space-md);
+    color: var(--color-text-disabled);
+  }
+
+  a {
+    color: var(--color-text-paragraph);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.page-intro {
+  background: var(--color-bg-body);
+  padding-block: var(--space-5xl);
+
+  h1 {
+    margin: 0 0 var(--space-3xl);
+    padding-inline-start: var(--space-xl);
+    border-inline-start: 3px solid var(--color-primary-600);
+    font-size: var(--display-sm-size);
+    line-height: var(--display-sm-line);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-default);
+  }
+}
+
+.page-intro__summary {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+// Filter row: the search box sits on the reading edge, as in the design.
+.news-filters {
+  display: flex;
+  justify-content: flex-start;
+  margin-block-end: var(--space-4xl);
+}
+
+.news-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min(100%, 340px);
+}
+
+.news-search__icon {
+  position: absolute;
+  inset-inline-start: var(--space-lg);
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-disabled);
+  pointer-events: none;
+}
+
+.news-search__input {
+  width: 100%;
+  padding-block: var(--space-lg);
+  padding-inline: calc(var(--space-lg) * 2 + 20px) var(--space-lg);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+  font: inherit;
+
+  &::placeholder {
+    color: var(--color-text-disabled);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 1px;
+  }
+}
+
+.news-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3xl);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.news-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+  padding: var(--space-xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+}
+
+.news-card__figure {
+  margin: 0;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: 100%;
+    height: 250px;
+    border-radius: var(--radius-md);
+  }
+}
+
+.news-card__title {
+  margin: 0;
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+
+  a {
+    color: var(--color-text-display);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// The card body grows so the date and action stay on the same line across a row.
+.news-card__summary {
+  margin: 0;
+  flex: 1;
+  color: var(--color-text-display);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.news-card__date {
+  margin: 0;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding-inline: var(--space-md);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-display);
+  font-size: var(--text-xs-size);
+  line-height: 1;
+}
+
+.news-card__more {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-default);
+  text-decoration: none;
+  font-size: var(--text-md-size);
+
+  &:hover {
+    background: var(--color-bg-neutral-100);
+  }
+}
+
+.news-empty {
+  grid-column: 1 / -1;
+  color: var(--color-text-paragraph);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-block-start: var(--space-4xl);
+}
+
+.pager__page,
+.pager__step {
+  min-width: 32px;
+  height: 32px;
+  padding-inline: var(--space-md);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-paragraph);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--color-bg-neutral-100);
+  }
+
+  &:disabled {
+    color: var(--color-text-disabled);
+    cursor: default;
+  }
+}
+
+.pager__page--current {
+  color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 2px solid var(--color-primary-600);
+  border-radius: 0;
+}

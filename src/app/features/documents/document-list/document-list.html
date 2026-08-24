@@ -1,0 +1,37 @@
+<section class="container section">
+  <h1>Documents</h1>
+
+  <div class="filters">
+    <button type="button" [class.active]="sectionFilter() === null" (click)="setSectionFilter(null)">All</button>
+    <button type="button" [class.active]="sectionFilter() === DocumentSection.Reports" (click)="setSectionFilter(DocumentSection.Reports)">Reports</button>
+    <button type="button" [class.active]="sectionFilter() === DocumentSection.Regulations" (click)="setSectionFilter(DocumentSection.Regulations)">Regulations</button>
+  </div>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (error()) {
+    <p role="alert" class="error">Could not load documents. Please try again later.</p>
+  } @else {
+    <ul class="card-grid">
+      @for (item of items(); track item.id) {
+        <li class="card">
+          @if (item.coverImageId) {
+            <app-media-image [mediaId]="item.coverImageId" variant="image" [alt]="item.title" />
+          }
+          <a [routerLink]="['/documents', item.slug]">{{ item.title }}</a>
+          <p class="meta">
+            @if (item.categoryName) {
+              {{ item.categoryName }}
+            }
+            @if (item.year) {
+              · {{ item.year }}
+            }
+          </p>
+        </li>
+      }
+      @empty {
+        <li>No documents published yet.</li>
+      }
+    </ul>
+  }
+</section>

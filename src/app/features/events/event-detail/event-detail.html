@@ -1,0 +1,41 @@
+@if (loading()) {
+  <p class="container">Loading…</p>
+} @else if (notFound()) {
+  <div class="container section">
+    <p role="alert" class="error">This event could not be found.</p>
+    <a routerLink="/events">Back to events</a>
+  </div>
+} @else if (event(); as e) {
+  <div class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a routerLink="/events">Events</a> / {{ e.title }}</p>
+      <h1>{{ e.title }}</h1>
+      <p class="meta">
+        {{ e.startsAtUtc | date: 'medium' }}
+        @if (e.endsAtUtc) {
+          – {{ e.endsAtUtc | date: 'medium' }}
+        }
+        @if (e.location) {
+          · {{ e.location }}
+        }
+        @if (e.eventTypeName) {
+          · {{ e.eventTypeName }}
+        }
+      </p>
+    </div>
+  </div>
+
+  <article class="container section">
+    @if (e.imageId) {
+      <figure class="hero-figure">
+        <app-media-image [mediaId]="e.imageId" variant="hero" [alt]="e.title" />
+      </figure>
+    }
+    @if (e.description) {
+      <div class="body">{{ e.description }}</div>
+    }
+    @if (e.registrationUrl) {
+      <a class="cta" [href]="e.registrationUrl">Register</a>
+    }
+  </article>
+}

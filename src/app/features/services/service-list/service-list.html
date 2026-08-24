@@ -1,0 +1,127 @@
+<div class="page-crumb">
+  <nav class="container" [attr.aria-label]="t().crumbLabel">
+    <ol class="crumbs">
+      <li><a routerLink="/">{{ t().home }}</a></li>
+      <li aria-current="page">{{ t().services }}</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="page-intro">
+  <div class="container">
+    <h1>{{ t().services }}</h1>
+    <p class="page-intro__summary">{{ t().intro }}</p>
+  </div>
+</section>
+
+<section class="section container">
+  @if (loading()) {
+    <p>{{ t().loading }}</p>
+  } @else if (error()) {
+    <p role="alert" class="error">{{ t().error }}</p>
+  } @else {
+    <!--
+      Content switcher: one segment per service audience, plus a tools segment for the
+      calculator-style services. Rendered as a radio group so arrow keys move between segments the
+      way a segmented control should.
+    -->
+    @if (segments().length > 1) {
+      <div class="switcher" role="radiogroup" [attr.aria-label]="t().filterLabel">
+        @for (segment of segments(); track segment.key) {
+          <button
+            type="button"
+            role="radio"
+            class="switcher__item"
+            [class.switcher__item--active]="segment.key === current().key"
+            [attr.aria-checked]="segment.key === current().key"
+            (click)="select(segment)"
+          >{{ segment.label }}</button>
+        }
+      </div>
+    }
+
+    <!--
+      Category chips, each with the number of services behind it. Toggling: the active chip
+      clears when tapped again, so there is always a way back to the whole segment.
+    -->
+    @if (chips().length > 1) {
+      <div class="chips" [attr.aria-label]="t().categoryLabel" role="group">
+        @for (chip of chips(); track chip.slug) {
+          <button
+            type="button"
+            class="chip"
+            [class.chip--selected]="chip.slug === category()"
+            [attr.aria-pressed]="chip.slug === category()"
+            (click)="toggleCategory(chip.slug)"
+          >
+            <span class="chip__count">{{ chip.count }}</span>
+            <span class="chip__label">{{ chip.name }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    <!--
+      Search on one side, the activity-type tabs under their heading on the other. "الكل" leads the
+      tab list; the rest appear only when they have services behind them.
+    -->
+    <div class="activity">
+      @if (tabs().length > 1) {
+        <div class="activity__tabs">
+          <p class="activity__label" id="activity-label">{{ t().activityLabel }}</p>
+          <div class="tabs" role="tablist" aria-labelledby="activity-label">
+            @for (tab of tabs(); track tab.slug) {
+              <button
+                type="button"
+                role="tab"
+                class="tab"
+                [class.tab--active]="(activity() ?? '') === tab.slug"
+                [attr.aria-selected]="(activity() ?? '') === tab.slug"
+                (click)="selectActivity(tab.slug)"
+              >
+                <span class="tab__count">{{ tab.count }}</span>
+                <span class="tab__label">{{ tab.name }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <form class="activity__search" role="search" (submit)="$event.preventDefault()">
+        <label class="search">
+          <span class="visually-hidden">{{ t().search }}</span>
+          <input
+            class="search__input"
+            type="search"
+            [placeholder]="t().searchPlaceholder"
+            [value]="query()"
+            (input)="onSearch($any($event.target).value)"
+          />
+          <svg class="search__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+            <circle cx="9" cy="9" r="6" />
+            <path d="m13.5 13.5 3.5 3.5" />
+          </svg>
+        </label>
+      </form>
+    </div>
+
+    <ul class="card-grid">
+      @for (item of visible(); track item.id) {
+        <li class="card service-card">
+          @if (item.iconId) {
+            <span class="service-card__icon">
+              <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+            </span>
+          }
+          <a class="card-title" [routerLink]="['/services', item.slug]">{{ item.name }}</a>
+          @if (item.description) {
+            <p>{{ item.description }}</p>
+          }
+        </li>
+      }
+      @empty {
+        <li class="card-empty">{{ t().empty }}</li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,175 @@
+// Contact Us form — Figma node 2546:220300.
+// Logical properties throughout so the whole form mirrors for Arabic.
+:host {
+  display: block;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+}
+
+.contact-form__row {
+  display: flex;
+  gap: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field__label {
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-default);
+}
+
+// The design marks required fields with a red asterisk beside the label.
+.field__required {
+  color: #b42318;
+}
+
+.field__input {
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+  font-family: var(--font-family-text);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+
+  &::placeholder {
+    color: #6c737f;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-border-primary);
+  }
+}
+
+.field__textarea {
+  height: auto;
+  min-height: 96px;
+  padding-block: var(--space-lg);
+  resize: vertical;
+}
+
+.field__select {
+  appearance: none;
+  // The design puts the chevron on the trailing edge of the field.
+  padding-inline-end: var(--space-5xl);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23161616' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5 10 12.5 15 7.5'/%3E%3C/svg%3E");
+  background-size: 20px 20px;
+  background-position: right var(--space-xl) center;
+  background-repeat: no-repeat;
+
+  &:dir(rtl) {
+    background-position: left var(--space-xl) center;
+  }
+}
+
+// Mobile number carries a fixed +966 country prefix.
+.field__group {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg-neutral-100);
+}
+
+// The design shows the country code as a small selector, with its own chevron.
+.field__prefix {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-inline: var(--space-xl);
+  background: var(--color-bg-neutral-200);
+  color: var(--color-text-default);
+  font-size: var(--text-md-size);
+  white-space: nowrap;
+}
+
+.field__prefix-chevron {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.field__input--grouped {
+  flex: 1;
+  min-width: 0;
+  border-radius: 0;
+}
+
+// Attachments is a block heading in the design, a step larger than the field labels.
+.field__label--block {
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.field__hint {
+  margin: 0;
+  color: var(--color-text-disabled);
+  font-size: var(--text-xs-size);
+  line-height: var(--text-xs-line);
+}
+
+.field__browse {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding-inline: var(--space-lg);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-default);
+
+  &:hover {
+    border-color: var(--color-border-primary);
+  }
+}
+
+// The native file input is replaced by the styled label above it.
+.field__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.contact-form__submit {
+  align-self: flex-start;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-black);
+  color: var(--color-text-oncolor);
+  font-family: var(--font-family-text);
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}

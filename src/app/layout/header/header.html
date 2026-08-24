@@ -1,0 +1,22 @@
+<header class="site-header">
+  <div class="site-header__row">
+    <a routerLink="/" class="site-header__logo" [attr.aria-label]="homeLabel()">
+      <img src="/brand/logo-swa-lockup.svg" alt="" width="90" height="71" />
+    </a>
+
+    <nav class="site-header__nav" [attr.aria-label]="navLabel()">
+      @for (item of navItems(); track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="is-active" [routerLinkActiveOptions]="item.options">
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="site-header__actions">
+      <button type="button" class="site-header__action" (click)="toggleLanguage()">
+        <span>{{ languageLabel() }}</span>
+        <img src="/brand/icon-globe.svg" alt="" width="24" height="24" />
+      </button>
+    </div>
+  </div>
+</header>
