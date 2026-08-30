@@ -230,3 +230,10 @@
   border-bottom: 2px solid var(--color-primary-600);
   border-radius: 0;
 }
+
+// Small phones: the 320px track floor exceeds the content box, so drop to one column.
+@media (max-width: 420px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+}

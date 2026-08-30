@@ -6,127 +6,242 @@
     <a routerLink="/services">{{ t().back }}</a>
   </div>
 } @else if (service(); as s) {
-  <section class="service-hero">
-    <div class="container service-hero__inner">
-      <div class="service-hero__main">
-        <p class="breadcrumb"><a routerLink="/services">{{ t().services }}</a> / {{ s.name }}</p>
+  <section class="service-top">
+    <div class="container service-layout">
+      <div class="service-layout__main">
+        <!--
+          Breadcrumb, title, tags and summary form one block because the design's pale blue band is
+          drawn from it: the band is exactly as tall as this block, while the card beside it starts
+          inside the band and hangs well below it.
+        -->
+        <div class="service-head">
+          <nav class="service-head__crumb" [attr.aria-label]="t().breadcrumb">
+            <ol class="crumbs">
+              <li><a routerLink="/">{{ t().home }}</a></li>
+              <li><a routerLink="/services">{{ t().services }}</a></li>
+              <li aria-current="page">{{ s.name }}</li>
+            </ol>
+          </nav>
 
-        <div class="service-hero__title">
-          @if (s.iconId) {
-            <app-media-image [mediaId]="s.iconId" variant="icon" [alt]="''" />
+          <div class="service-head__row">
+            <h1 class="service-head__title">{{ s.name }}</h1>
+            @if (s.startServiceUrl) {
+              <a
+                class="service-head__cta"
+                [href]="s.startServiceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >{{ ctaLabel() }}</a>
+            }
+          </div>
+
+          @if (tags().length) {
+            <ul class="service-tags">
+              @for (tag of tags(); track tag.label) {
+                <li [class]="'service-tag service-tag--' + tag.tone">{{ tag.label }}</li>
+              }
+            </ul>
           }
-          <h1>{{ s.name }}</h1>
+
+          @if (s.description) {
+            <p class="service-head__summary">{{ s.description }}</p>
+          }
         </div>
 
-        @if (s.audienceNames.length) {
-          <ul class="chips">
-            @for (audience of s.audienceNames; track audience) {
-              <li class="chip">{{ audience }}</li>
-            }
-          </ul>
-        }
+        @if (tabs().length) {
+          <div class="service-info">
+            <div class="tabs" role="tablist">
+              @for (tab of tabs(); track tab.key) {
+                <button
+                  type="button"
+                  role="tab"
+                  class="tabs__tab"
+                  [class.is-active]="tab.key === activeTab()?.key"
+                  [attr.aria-selected]="tab.key === activeTab()?.key ? 'true' : 'false'"
+                  (click)="selectTab(tab.key)"
+                >
+                  {{ tab.label }}
+                </button>
+              }
+            </div>
 
-        @if (s.description) {
-          <p class="service-hero__description">{{ s.description }}</p>
+            @if (activeTab(); as tab) {
+              <div class="tabs__panel" role="tabpanel">
+                @if (tab.key === 'steps') {
+                  <ol class="steps">
+                    @for (line of tab.lines; track $index) {
+                      <li>{{ line }}</li>
+                    }
+                  </ol>
+                } @else {
+                  <ul class="bullets">
+                    @for (line of tab.lines; track $index) {
+                      <li>{{ line }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+            }
+          </div>
         }
       </div>
 
-      @if (s.startServiceUrl) {
-        <a class="service-hero__cta" [href]="s.startServiceUrl" target="_blank" rel="noopener noreferrer">
-          {{ ctaLabel() }}
-        </a>
-      }
+      <aside class="service-layout__card">
+        <div class="service-card">
+          @if (facts().length) {
+            <ul class="fact-list">
+              @for (fact of facts(); track fact.label) {
+                <li class="fact">
+                  <span class="fact__icon" aria-hidden="true">
+                    @switch (fact.icon) {
+                      @case ('audience') {
+                        <svg viewBox="-2.2498 -1.25 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3.94445 13.5869C7.49845 11.4709 12.0028 11.4708 15.5568 13.5869C15.6729 13.6561 15.8162 13.7375 15.9786 13.8291C16.6914 14.2312 17.7698 14.839 18.5079 15.5615C18.9696 16.0134 19.4077 16.6093 19.4874 17.3389C19.5722 18.1147 19.2337 18.8424 18.5548 19.4893C17.3834 20.6053 15.9776 21.5 14.1593 21.5H5.34093C3.52273 21.4999 2.11683 20.6053 0.945426 19.4893C0.266619 18.8424 -0.0719361 18.1146 0.0128091 17.3389C0.0925548 16.6093 0.53161 16.0134 0.993278 15.5615C1.73144 14.8391 2.80888 14.2312 3.5216 13.8291C3.68421 13.7374 3.82817 13.6562 3.94445 13.5869ZM14.7892 14.876C11.7081 13.0414 7.79315 13.0415 4.71203 14.876C4.54418 14.9759 4.35975 15.0802 4.16711 15.1895C3.4545 15.5937 2.6222 16.066 2.04211 16.6338C1.68204 16.9863 1.52858 17.2773 1.50402 17.502C1.48458 17.6803 1.53013 17.9742 1.98058 18.4033C3.01636 19.3901 4.0686 19.9999 5.34093 20H14.1593C15.4317 20 16.4848 19.3902 17.5206 18.4033C17.9708 17.9743 18.0157 17.6803 17.9962 17.502C17.9716 17.2773 17.8182 16.9863 17.4581 16.6338C16.878 16.066 16.0457 15.5937 15.3331 15.1895C15.1406 15.0802 14.9569 14.9759 14.7892 14.876ZM9.75011 0C12.6496 0 15.0001 2.3505 15.0001 5.25C15.0001 8.14949 12.6496 10.5 9.75011 10.5C6.85062 10.5 4.50011 8.14949 4.50011 5.25C4.50011 2.3505 6.85062 0 9.75011 0ZM9.75011 1.5C7.67905 1.5 6.00011 3.17893 6.00011 5.25C6.00011 7.32107 7.67905 9 9.75011 9C11.8212 9 13.5001 7.32107 13.5001 5.25C13.5001 3.17893 11.8212 1.5 9.75011 1.5Z" />
+                        </svg>
+                      }
+                      @case ('duration') {
+                        <svg viewBox="-1.25 -1.25 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.75 0C16.6871 0 21.5 4.81294 21.5 10.75C21.5 16.6871 16.6871 21.5 10.75 21.5C4.81294 21.5 0 16.6871 0 10.75C0 4.81294 4.81294 0 10.75 0ZM10.75 1.5C5.64137 1.5 1.5 5.64137 1.5 10.75C1.5 15.8586 5.64137 20 10.75 20C15.8586 20 20 15.8586 20 10.75C20 5.64137 15.8586 1.5 10.75 1.5ZM10.75 6C11.1642 6 11.5 6.33579 11.5 6.75V10.4395L13.2803 12.2197C13.5732 12.5126 13.5732 12.9874 13.2803 13.2803C12.9874 13.5732 12.5126 13.5732 12.2197 13.2803L10.2197 11.2803C10.0791 11.1396 10 10.9489 10 10.75V6.75C10 6.33579 10.3358 6 10.75 6Z" />
+                        </svg>
+                      }
+                      @case ('channels') {
+                        <svg viewBox="-1.25 -1.25 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8.71387 1.92494e-06C9.12808 1.92494e-06 9.46387 0.335788 9.46387 0.750002C9.46387 1.16422 9.12808 1.5 8.71387 1.5C7.06545 1.5 5.88764 1.50109 4.97559 1.59766C4.07719 1.69281 3.52325 1.87427 3.0918 2.17774C2.73557 2.42833 2.42549 2.73949 2.17578 3.09766C1.87295 3.53209 1.69248 4.09045 1.59766 4.99414C1.50147 5.91097 1.5 7.09438 1.5 8.75C1.5 10.4056 1.50147 11.589 1.59766 12.5059C1.69248 13.4096 1.87295 13.9679 2.17578 14.4023C2.42549 14.7605 2.73557 15.0717 3.0918 15.3223C3.52325 15.6257 4.07719 15.8072 4.97559 15.9023C5.88764 15.9989 7.06545 16 8.71387 16H12.6963C14.3448 16 15.5225 15.9989 16.4346 15.9023C17.333 15.8072 17.8869 15.6258 18.3184 15.3223C18.6572 15.0841 19.125 15.1661 19.3633 15.5049C19.6015 15.8437 19.5204 16.3115 19.1816 16.5498C18.4562 17.0601 17.6156 17.2862 16.5928 17.3945C15.5925 17.5004 14.3353 17.5 12.7402 17.5H11.5V20H14.75C15.1642 20 15.5 20.3358 15.5 20.75C15.5 21.1642 15.1642 21.5 14.75 21.5H6.75C6.33579 21.5 6 21.1642 6 20.75C6 20.3358 6.33579 20 6.75 20H10V17.5H8.66992C7.0752 17.5 5.81848 17.5004 4.81836 17.3945C3.79541 17.2862 2.95405 17.0601 2.22852 16.5498C1.72884 16.1983 1.29497 15.7614 0.945313 15.2598C0.438041 14.532 0.213199 13.6894 0.105469 12.6631C8.75254e-05 11.6588 -8.31884e-06 10.3958 2.64233e-07 8.79297V8.70703C-8.31884e-06 7.10422 8.75254e-05 5.84118 0.105469 4.83692C0.213199 3.81062 0.438041 2.96796 0.945313 2.24024C1.29497 1.73864 1.72884 1.30167 2.22852 0.950197C2.95405 0.439881 3.79541 0.213783 4.81836 0.105471C5.81848 -0.000382309 7.0752 -6.89317e-06 8.66992 1.92494e-06H8.71387ZM16.8018 1.92494e-06C17.7002 -2.74601e-05 18.4501 0.000113743 19.0449 0.08008C19.6725 0.164513 20.239 0.350307 20.6943 0.805666C21.1497 1.26102 21.3355 1.82747 21.4199 2.45508C21.4999 3.04986 21.5 3.79976 21.5 4.69824V8.80176C21.5 9.70024 21.4999 10.4501 21.4199 11.0449C21.3355 11.6725 21.1497 12.239 20.6943 12.6943C20.239 13.1497 19.6725 13.3355 19.0449 13.4199C18.4501 13.4999 17.7002 13.5 16.8018 13.5H15.6982C14.7998 13.5 14.0499 13.4999 13.4551 13.4199C12.8275 13.3355 12.261 13.1497 11.8057 12.6943C11.3503 12.239 11.1645 11.6725 11.0801 11.0449C11.0001 10.4501 11 9.70024 11 8.80176V4.69824C11 3.79977 11.0001 3.04986 11.0801 2.45508C11.1645 1.82747 11.3503 1.26103 11.8057 0.805666C12.261 0.350307 12.8275 0.164514 13.4551 0.08008C14.0499 0.000113803 14.7998 -2.75198e-05 15.6982 1.92494e-06H16.8018ZM15.75 1.5C14.786 1.5 14.1383 1.50147 13.6553 1.56641C13.1939 1.62845 12.9965 1.73591 12.8662 1.86621C12.7359 1.99652 12.6285 2.19389 12.5664 2.65528C12.5015 3.13831 12.5 3.78599 12.5 4.75V8.75C12.5 9.71401 12.5015 10.3617 12.5664 10.8447C12.6285 11.3061 12.7359 11.5035 12.8662 11.6338C12.9965 11.7641 13.1939 11.8716 13.6553 11.9336C14.1383 11.9985 14.786 12 15.75 12H16.75C17.714 12 18.3617 11.9985 18.8447 11.9336C19.3061 11.8716 19.5035 11.7641 19.6338 11.6338C19.7641 11.5035 19.8716 11.3061 19.9336 10.8447C19.9985 10.3617 20 9.71401 20 8.75V4.75C20 3.78599 19.9985 3.13831 19.9336 2.65528C19.8715 2.19389 19.7641 1.99652 19.6338 1.86621C19.5035 1.73591 19.3061 1.62845 18.8447 1.56641C18.3617 1.50147 17.714 1.5 16.75 1.5H15.75ZM16.2588 9.25C16.8111 9.25 17.2588 9.69772 17.2588 10.25C17.2588 10.8023 16.8111 11.25 16.2588 11.25H16.25C15.6977 11.25 15.25 10.8023 15.25 10.25C15.25 9.69772 15.6977 9.25 16.25 9.25H16.2588Z" />
+                        </svg>
+                      }
+                      @case ('fee') {
+                        <svg viewBox="-1.25 -1.25 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.75 0C16.6871 0 21.5 4.81313 21.5 10.75C21.5 16.6871 16.6871 21.5 10.75 21.5C4.81292 21.5 0 16.6871 0 10.75C0 4.81313 4.81291 0 10.75 0ZM10.75 1.5C5.64136 1.5 1.5 5.64154 1.5 10.75C1.5 15.8587 5.64135 20 10.75 20C15.8587 20 20 15.8587 20 10.75C20 5.64154 15.8586 1.5 10.75 1.5ZM9.08594 7.43652C9.35752 7.49119 9.5914 7.64652 9.74316 7.86035L10.3545 8.73828C10.418 8.82909 10.4551 8.93873 10.4551 9.05664V10.3477L11.6318 10.5889V8.26172L15.4082 9.03906C15.5865 9.4217 15.7048 9.83693 15.75 10.2725L12.8086 9.66699V10.8311L15.4082 11.3662C15.5865 11.7488 15.7048 12.1641 15.75 12.5996L12.8086 11.9951V16.1807C12.3579 15.9358 11.9572 15.61 11.6318 15.2256V11.7529L10.4551 11.5107V16.75C10.0046 16.5053 9.60458 16.1792 9.2793 15.7949V11.2695L6.64648 10.7275C6.46818 10.3449 6.34999 9.92962 6.30469 9.49414L9.2793 10.1055V8.63965L6.0918 7.98438C5.91335 7.60156 5.79519 7.18576 5.75 6.75L9.08594 7.43652ZM15.418 6.52246C15.5913 6.90318 15.706 7.31663 15.75 7.75L12.082 6.97754C11.9087 6.59673 11.7939 6.18337 11.75 5.75L15.418 6.52246Z" />
+                        </svg>
+                      }
+                    }
+                  </span>
+                  <div class="fact__body">
+                    <p class="fact__label">{{ fact.label }}</p>
+                    <p class="fact__value">{{ fact.value }}</p>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+
+          <ul class="fact-list">
+            @for (link of contactLinks(); track link.key) {
+              <li class="fact">
+                <!-- The design gives the phone row an icon and leaves the FAQ row without one. -->
+                @if (link.icon) {
+                  <span class="fact__icon" aria-hidden="true">
+                    @switch (link.icon) {
+                      @case ('phone') {
+                        <svg viewBox="-1.2496 -1.2496 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4.06726 0.0365676C4.63395 0.153692 5.08524 0.534431 5.36564 1.03746L6.25885 2.6399C6.58785 3.23011 6.86473 3.72679 7.04554 4.15857C7.23735 4.61658 7.35126 5.06824 7.29919 5.5676C7.24711 6.06696 7.04246 6.4854 6.76029 6.89399C6.49428 7.27917 6.12088 7.70804 5.67718 8.21767L3.44932 10.7767C5.21617 13.6727 7.8251 16.2828 10.7241 18.0514L13.2831 15.8236C13.7927 15.3799 14.2216 15.0065 14.6068 14.7405C15.0153 14.4583 15.4338 14.2536 15.9331 14.2016C16.4325 14.1495 16.8842 14.2634 17.3422 14.4552C17.774 14.636 18.2706 14.9129 18.8609 15.2419L20.4633 16.1351C20.9663 16.4155 21.3471 16.8668 21.4642 17.4335C21.5825 18.0061 21.408 18.5816 21.0224 19.0547C19.6235 20.771 17.3822 21.8639 15.031 21.3896C13.5858 21.098 12.1598 20.6123 10.4351 19.6232C6.9697 17.6358 3.86263 14.527 1.87755 11.0657C0.888434 9.34099 0.402719 7.915 0.111176 6.46974C-0.36312 4.11852 0.729715 1.87724 2.44608 0.478334C2.91911 0.0927917 3.49466 -0.0817795 4.06726 0.0365676ZM12.1212 18.8239C13.2876 19.3986 14.302 19.7123 15.3276 19.9192C17.0237 20.2613 18.7359 19.4858 19.8597 18.107C20.0072 17.926 20.0082 17.7996 19.9952 17.7371C19.9811 17.6687 19.9238 17.5517 19.733 17.4453L18.1665 16.5721C17.5308 16.2178 17.1077 15.9832 16.7628 15.8388C16.4354 15.7017 16.2476 15.6769 16.0887 15.6935C15.9299 15.71 15.7512 15.7731 15.4592 15.9747C15.1515 16.1872 14.7858 16.5041 14.237 16.9819L12.1212 18.8239ZM2.67685 9.37956L4.51884 7.26376C4.99667 6.7149 5.31355 6.34925 5.52602 6.04159C5.7277 5.74956 5.79072 5.57086 5.80728 5.41202C5.82384 5.25319 5.79905 5.06533 5.66196 4.73797C5.51754 4.3931 5.28292 3.96993 4.92861 3.33429L4.05543 1.76778C3.94905 1.57693 3.83207 1.51966 3.76365 1.50552C3.70115 1.4926 3.57478 1.49351 3.39374 1.64106C2.01497 2.76482 1.23943 4.47708 1.58156 6.17313C1.78844 7.19871 2.10213 8.21319 2.67685 9.37956Z" />
+                        </svg>
+                      }
+                    }
+                  </span>
+                }
+                <div class="fact__body">
+                  <p class="fact__label">{{ link.label }}</p>
+                  <p class="fact__value fact__value--link">
+                    @if (link.route) {
+                      <a [routerLink]="link.route">
+                        <svg class="fact__link-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M9 3h4v4M13 3 7.5 8.5M11 9.5v2.9c0 .88-.72 1.6-1.6 1.6H4a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6h2.9" />
+                        </svg>
+                        <span dir="auto">{{ link.value }}</span>
+                      </a>
+                    } @else {
+                      <a [href]="link.href">
+                        <svg class="fact__link-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M9 3h4v4M13 3 7.5 8.5M11 9.5v2.9c0 .88-.72 1.6-1.6 1.6H4a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6h2.9" />
+                        </svg>
+                        <span dir="auto">{{ link.value }}</span>
+                      </a>
+                    }
+                  </p>
+                </div>
+              </li>
+            }
+          </ul>
+
+          @if (guideUrl(); as url) {
+            <div class="guide">
+              <p class="fact__label">{{ t().guideTitle }}</p>
+              <a class="guide__button" [href]="url" target="_blank" rel="noopener noreferrer">
+                <svg class="guide__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11.5 2.5H6.5A1.5 1.5 0 0 0 5 4v12a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 15 16V6l-3.5-3.5Z" />
+                  <path d="M11.5 2.5V6H15" />
+                </svg>
+                <span>{{ t().guide }}</span>
+              </a>
+            </div>
+          }
+        </div>
+      </aside>
     </div>
   </section>
 
-  <div class="container service-body">
-    <article class="service-body__main">
-      @if (tabs().length) {
-        <div class="tabs" role="tablist">
-          @for (tab of tabs(); track tab.key) {
-            <button
-              type="button"
-              role="tab"
-              class="tabs__tab"
-              [class.is-active]="tab.key === activeTab()?.key"
-              [attr.aria-selected]="tab.key === activeTab()?.key ? 'true' : 'false'"
-              (click)="selectTab(tab.key)"
-            >
-              {{ tab.label }}
-            </button>
-          }
+  @if (related().length) {
+    <section class="related">
+      <div class="container">
+        <div class="related__head">
+          <h2 class="related__title">{{ t().relatedTitle }}</h2>
+          <a class="related__all" routerLink="/services">{{ t().viewAll }}</a>
         </div>
 
-        @if (activeTab(); as tab) {
-          <div class="tabs__panel" role="tabpanel">
-            @if (tab.key === 'steps') {
-              <ol class="steps">
-                @for (line of tab.lines; track $index) {
-                  <li>{{ line }}</li>
+        <!--
+          Three tracks whether or not three services came back, so a lone related service keeps the
+          same card size as a full row rather than stretching across the section.
+        -->
+        <ul class="related__grid">
+          @for (item of related(); track item.id) {
+            <li class="related-card">
+              <span class="related-card__icon" [class.related-card__icon--empty]="!item.iconId">
+                @if (item.iconId) {
+                  <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
                 }
-              </ol>
-            } @else {
-              <ul class="bullets">
-                @for (line of tab.lines; track $index) {
-                  <li>{{ line }}</li>
+              </span>
+              <h3 class="related-card__title">{{ item.name }}</h3>
+              @if (item.description) {
+                <p class="related-card__text">{{ item.description }}</p>
+              }
+              <ul class="service-tags service-tags--card">
+                @for (audience of item.audienceNames; track audience) {
+                  <li class="service-tag service-tag--neutral">{{ audience }}</li>
+                }
+                @if (item.categoryName) {
+                  <li class="service-tag service-tag--success">{{ item.categoryName }}</li>
+                }
+                @if (item.activityTypeName) {
+                  <li class="service-tag service-tag--info">{{ item.activityTypeName }}</li>
                 }
               </ul>
-            }
-          </div>
-        }
-      }
-    </article>
-
-    <aside class="service-body__aside">
-      <div class="service-card">
-        @for (fact of facts(); track fact.label) {
-          <div class="fact">
-            <span class="fact__icon" aria-hidden="true">
-              @switch (fact.icon) {
-                @case ('audience') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="3.5" />
-                    <path d="M4.5 19.5a7.5 7.5 0 0 1 15 0" />
-                  </svg>
-                }
-                @case ('duration') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="8.5" />
-                    <path d="M12 7.5V12l3 2" />
-                  </svg>
-                }
-                @case ('channels') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4.5" width="18" height="12" rx="2" />
-                    <path d="M8.5 20h7" />
-                  </svg>
-                }
-                @case ('fee') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="8.5" />
-                    <path d="M12 7.5v9M9.75 10.25h4.5M9.75 13.75h4.5" />
-                  </svg>
-                }
-                @case ('phone') {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4Z" />
-                  </svg>
-                }
-              }
-            </span>
-            <div class="fact__text">
-              <p class="fact__label">{{ fact.label }}</p>
-              <p class="fact__value">{{ fact.value }}</p>
-            </div>
-          </div>
-        }
-
-        @if (guideUrl(); as url) {
-          <a class="service-card__guide" [href]="url" target="_blank" rel="noopener noreferrer">{{ t().guide }}</a>
-        }
+              <a class="related-card__link" [routerLink]="['/services', item.slug]">
+                <span>{{ t().viewDetails }}</span>
+                <svg class="related-card__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M16 10H4M9 5 4 10l5 5" />
+                </svg>
+              </a>
+            </li>
+          }
+        </ul>
       </div>
-    </aside>
-  </div>
+    </section>
+  }
+
+  <section class="container note-section">
+    <div class="note">
+      <span class="note__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8.5 12.2 2.3 2.3 4.7-4.7" />
+        </svg>
+      </span>
+      <h2 class="note__title">{{ t().commentsTitle }}</h2>
+      <p class="note__text">{{ t().commentsBody }}</p>
+      <a class="note__cta" routerLink="/pages/contact-us">{{ t().contactUs }}</a>
+    </div>
+  </section>
 
   @if (s.updatedAtUtc) {
     <div class="container service-updated">

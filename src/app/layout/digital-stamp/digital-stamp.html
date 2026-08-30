@@ -1,0 +1,67 @@
+<div class="stamp">
+  <div class="container stamp__bar">
+    <!-- The emblem artwork is white-on-transparent, so it sits on the green chip the design gives it. -->
+    <span class="stamp__flag" role="img" [attr.aria-label]="t().flagAlt">
+      <img src="/brand/emblem-ksa.svg" alt="" width="14" height="9" />
+    </span>
+    <p class="stamp__text">{{ t().registered }}</p>
+    <button
+      type="button"
+      class="stamp__toggle"
+      [attr.aria-expanded]="expanded()"
+      aria-controls="digital-stamp-panel"
+      (click)="toggle()"
+    >
+      <span>{{ t().how }}</span>
+      <svg class="stamp__chevron" [class.stamp__chevron--up]="expanded()" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6l4 4 4-4" />
+      </svg>
+    </button>
+  </div>
+
+  @if (expanded()) {
+    <div class="stamp__panel" id="digital-stamp-panel">
+      <div class="container">
+        <div class="stamp__facts">
+          <div class="stamp__fact">
+            <span class="stamp__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5" />
+                <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5" />
+              </svg>
+            </span>
+            <div>
+              <p class="stamp__fact-title">
+                {{ t().urlTitle }} <span class="stamp__highlight">{{ t().urlSuffix }}</span>
+              </p>
+              <p class="stamp__fact-body">{{ t().urlBody }}</p>
+            </div>
+          </div>
+
+          <div class="stamp__fact">
+            <span class="stamp__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="10" width="16" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+              </svg>
+            </span>
+            <div>
+              <p class="stamp__fact-title">
+                {{ t().httpsTitle }} <span class="stamp__highlight">{{ t().httpsSuffix }}</span>
+              </p>
+              <p class="stamp__fact-body">{{ t().httpsBody }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stamp__registry">
+          <img src="/brand/logo-dga.svg" [alt]="t().dgaAlt" width="28" height="28" />
+          <p>
+            {{ t().registryLabel }}
+            <a href="https://dga.gov.sa" target="_blank" rel="noopener noreferrer">{{ registryNumber }}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,7 +1,43 @@
-// Contact Us form — Figma node 2546:220300.
-// Logical properties throughout so the whole form mirrors for Arabic.
-:host {
+// The form is placed inside the page's own container by its host, so it carries no container
+// padding of its own.
+.contact-form-host {
   display: block;
+}
+
+// Content switcher — two equal halves, the active one solid green.
+.form-tabs {
+  display: flex;
+  margin-block-end: var(--space-4xl);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.form-tabs__tab {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: 0;
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover:not(.form-tabs__tab--active) {
+    background: var(--color-bg-neutral-200);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: -2px;
+  }
+}
+
+.form-tabs__tab--active {
+  background: var(--color-primary-600);
+  color: var(--color-text-oncolor);
 }
 
 .contact-form {
@@ -24,152 +60,187 @@
   gap: var(--space-md);
 }
 
+// A row holding a single field spans the full width rather than half of it.
+.field--wide {
+  flex-basis: 100%;
+}
+
 .field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   font-size: var(--text-sm-size);
   line-height: var(--text-sm-line);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-default);
 }
 
-// The design marks required fields with a red asterisk beside the label.
 .field__required {
   color: #b42318;
 }
 
 .field__input {
+  width: 100%;
   height: 40px;
-  padding-inline: var(--space-xl);
-  border: 1px solid transparent;
+  padding-inline: var(--space-xl) var(--space-md);
+  border: 1px solid var(--color-field-border, #9da4ae);
   border-radius: var(--radius-sm);
-  background: var(--color-bg-neutral-100);
+  background: var(--color-bg-white);
   color: var(--color-text-default);
-  font-family: var(--font-family-text);
+  font: inherit;
   font-size: var(--text-md-size);
-  line-height: var(--text-md-line);
 
   &::placeholder {
-    color: #6c737f;
+    color: var(--color-text-placeholder);
   }
 
   &:focus-visible {
-    outline: none;
-    border-color: var(--color-border-primary);
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: -1px;
   }
 }
 
 .field__textarea {
-  height: auto;
-  min-height: 96px;
+  height: 96px;
   padding-block: var(--space-lg);
   resize: vertical;
 }
 
-.field__select {
-  appearance: none;
-  // The design puts the chevron on the trailing edge of the field.
-  padding-inline-end: var(--space-5xl);
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23161616' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5 10 12.5 15 7.5'/%3E%3C/svg%3E");
-  background-size: 20px 20px;
-  background-position: right var(--space-xl) center;
-  background-repeat: no-repeat;
-
-  &:dir(rtl) {
-    background-position: left var(--space-xl) center;
-  }
+// Native select arrows differ per platform, so the chevron is drawn and the native one hidden.
+.field__select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-// Mobile number carries a fixed +966 country prefix.
+.field__select {
+  appearance: none;
+  padding-inline-end: calc(var(--space-xl) + 20px);
+}
+
+.field__chevron {
+  position: absolute;
+  inset-inline-end: var(--space-xl);
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-default);
+  pointer-events: none;
+}
+
 .field__group {
   display: flex;
   align-items: stretch;
+  border: 1px solid var(--color-field-border, #9da4ae);
   border-radius: var(--radius-sm);
+  background: var(--color-bg-white);
   overflow: hidden;
-  background: var(--color-bg-neutral-100);
 }
 
-// The design shows the country code as a small selector, with its own chevron.
 .field__prefix {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
+  flex-shrink: 0;
   padding-inline: var(--space-xl);
-  background: var(--color-bg-neutral-200);
+  background: var(--color-bg-neutral-100);
   color: var(--color-text-default);
   font-size: var(--text-md-size);
-  white-space: nowrap;
 }
 
 .field__prefix-chevron {
-  display: block;
   width: 20px;
   height: 20px;
-  flex-shrink: 0;
 }
 
 .field__input--grouped {
-  flex: 1;
-  min-width: 0;
+  border: 0;
   border-radius: 0;
+  flex: 1;
 }
 
-// Attachments is a block heading in the design, a step larger than the field labels.
-.field__label--block {
-  font-size: var(--text-md-size);
-  line-height: var(--text-md-line);
+// File upload block.
+.upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
 }
 
-.field__hint {
+.upload__label {
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-default);
+}
+
+.upload__hint {
   margin: 0;
-  color: var(--color-text-disabled);
+  color: var(--color-text-tertiary, #64748b);
   font-size: var(--text-xs-size);
   line-height: var(--text-xs-line);
 }
 
-.field__browse {
-  align-self: flex-start;
+.upload__browse {
   display: inline-flex;
   align-items: center;
   height: 32px;
   padding-inline: var(--space-lg);
-  border: 1px solid var(--color-border-neutral);
   border-radius: var(--radius-sm);
-  cursor: pointer;
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
   font-size: var(--text-sm-size);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-default);
+  cursor: pointer;
 
   &:hover {
-    border-color: var(--color-border-primary);
+    background: var(--color-bg-neutral-200);
   }
 }
 
-// The native file input is replaced by the styled label above it.
-.field__file {
+// The native control is hidden behind its label but stays reachable by keyboard.
+.upload__input {
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+  opacity: 0;
+}
+
+// The design pins the submit button to the form's reading edge — right in Arabic, left in
+// English (Figma places it at x=702 of an 816px form, i.e. hard against the RTL start edge).
+.contact-form__actions {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .contact-form__submit {
-  align-self: flex-start;
   height: 40px;
   padding-inline: var(--space-xl);
-  border: none;
+  border: 0;
   border-radius: var(--radius-sm);
-  background: var(--color-bg-black);
+  background: var(--color-primary-600);
   color: var(--color-text-oncolor);
-  font-family: var(--font-family-text);
+  font: inherit;
   font-size: var(--text-md-size);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
 
   &:hover {
-    opacity: 0.9;
+    background: var(--color-primary-800);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-tabs {
+    flex-direction: column;
+    border-radius: var(--radius-sm);
+  }
+
+  .form-tabs__tab {
+    flex: none;
   }
 }

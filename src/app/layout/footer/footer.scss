@@ -103,16 +103,6 @@
   }
 }
 
-// The design renders the LinkedIn mark full-bleed at 32px with no surrounding button.
-.site-footer__icon-button--bare {
-  border: none;
-
-  img {
-    width: 32px;
-    height: 32px;
-  }
-}
-
 .site-footer__legal {
   display: flex;
   align-items: center;
@@ -124,8 +114,10 @@
 .site-footer__logos {
   display: flex;
   align-items: center;
-  gap: var(--space-3xl);
-  flex-shrink: 0;
+  // The three marks total ~350px, which is wider than a small phone; let them wrap rather than
+  // push the whole page sideways.
+  flex-wrap: wrap;
+  gap: var(--space-xl) var(--space-3xl);
 }
 
 .site-footer__logo-swa {

@@ -1,13 +1,109 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { LanguageService } from '../../../core/services/language.service';
 
+type FieldKind = 'text' | 'email' | 'tel' | 'select' | 'textarea';
+
+interface Field {
+  readonly id: string;
+  readonly kind: FieldKind;
+  readonly ar: string;
+  readonly en: string;
+  readonly placeholderAr: string;
+  readonly placeholderEn: string;
+}
+
+interface Tab {
+  readonly key: 'contact' | 'developers';
+  readonly ar: string;
+  readonly en: string;
+  /** Each entry is one row; a row holds one or two fields, as the design lays them out. */
+  readonly rows: readonly (readonly Field[])[];
+}
+
+const f = (
+  id: string,
+  kind: FieldKind,
+  ar: string,
+  en: string,
+  placeholderAr: string,
+  placeholderEn: string,
+): Field => ({ id, kind, ar, en, placeholderAr, placeholderEn });
+
+const CHOOSE_AR = 'إختيار';
+const CHOOSE_EN = 'Select';
+
 /**
- * Static rendering of the Contact Us form from Figma node 2546:220300.
- *
- * The fields are real inputs so the layout can be checked and the page reads correctly, but there
- * is no endpoint behind it — submitting is deliberately inert (see onSubmit). Wiring it up needs a
- * backend to receive the request; until then the form must not imply a message was sent.
+ * The two form variants from Figma nodes 3145:27791 (نموذج التواصل) and 3140:24137
+ * (استفسارات المطورين العقاريين). Fields are listed in reading order, so the first of a pair
+ * lands on the right in Arabic and the left in English.
  */
+const TABS: readonly Tab[] = [
+  {
+    key: 'contact',
+    ar: 'نموذج التواصل',
+    en: 'Contact form',
+    rows: [
+      [
+        f('full-name', 'text', 'الأسم الثلاثي', 'Full name', 'ادخل الاسم الثلاثي', 'Enter your full name'),
+        f('national-id', 'text', 'رقم الهوية / الإقامة', 'National ID / Iqama', 'ادخل رقم الهوية / الإقامة', 'Enter your ID number'),
+      ],
+      [
+        f('email', 'email', 'البريد الإلكتروني', 'Email', 'ادخل البريد الإلكتروني', 'Enter your email'),
+        f('mobile', 'tel', 'رقم الجوال', 'Mobile number', '00 000 0000', '00 000 0000'),
+      ],
+      [
+        f('message-type', 'select', 'نوع الرسالة', 'Message type', CHOOSE_AR, CHOOSE_EN),
+        f('subject', 'select', 'الموضوع', 'Subject', CHOOSE_AR, CHOOSE_EN),
+      ],
+      [f('message', 'textarea', 'محتوى الرسالة', 'Message', 'ادخل محتوى الرسالة', 'Enter your message')],
+    ],
+  },
+  {
+    key: 'developers',
+    ar: 'استفسارات المطورين العقاريين',
+    en: 'Real-estate developer enquiries',
+    rows: [
+      [
+        f('developer-name', 'text', 'اسم المطور', 'Developer name', 'ادخل اسم المطور', 'Enter the developer name'),
+        f('project-address', 'text', 'عنوان المشروع', 'Project address', 'ادخل عنوان المشروع', 'Enter the project address'),
+      ],
+      [
+        f('agent-first', 'text', 'اسم المفوض الاول', 'First authorised agent', 'ادخل اسم المفوض الاول', 'Enter the first agent’s name'),
+        f('agent-last', 'text', 'اسم المفوض الأخير', 'Second authorised agent', 'ادخل اسم المفوض الأخير', 'Enter the second agent’s name'),
+      ],
+      [
+        f('dev-email', 'email', 'البريد الإلكتروني', 'Email', 'ادخل البريد الإلكتروني', 'Enter your email'),
+        f('dev-mobile', 'tel', 'رقم الجوال', 'Mobile number', '00 000 0000', '00 000 0000'),
+      ],
+      [
+        f('region', 'select', 'المنطقة', 'Region', CHOOSE_AR, CHOOSE_EN),
+        f('city', 'select', 'المدينة', 'City', CHOOSE_AR, CHOOSE_EN),
+      ],
+      [f('dev-subject', 'text', 'الموضوع', 'Subject', 'ادخل الموضوع', 'Enter the subject')],
+      [f('dev-message', 'textarea', 'محتوى الرسالة', 'Message', 'ادخل محتوى الرسالة', 'Enter your message')],
+    ],
+  },
+];
+
+const COPY = {
+  ar: {
+    required: 'حقل مطلوب',
+    attach: 'إرفاق ملف',
+    attachHint: 'الحد الأقصى لحجم الملف المسموح به هو 2 ميجابايت، وتشمل الصيغ المدعومة .jpg و .png و .pdf.',
+    browse: 'تصفح الملفات',
+    submit: 'إرسال الرسالة',
+    tabsLabel: 'اختيار النموذج',
+  },
+  en: {
+    required: 'Required field',
+    attach: 'Attach a file',
+    attachHint: 'Maximum file size is 2 MB. Supported formats are .jpg, .png and .pdf.',
+    browse: 'Browse files',
+    submit: 'Send message',
+    tabsLabel: 'Choose a form',
+  },
+} as const;
+
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.html',
@@ -18,53 +114,27 @@ export class ContactForm {
 
   private readonly isArabic = computed(() => this.language.language() === 'ar');
 
-  protected readonly t = computed(() => (this.isArabic() ? AR : EN));
+  protected readonly active = signal<Tab['key']>('contact');
+  protected readonly t = computed(() => (this.isArabic() ? COPY.ar : COPY.en));
+
+  protected readonly tabs = computed(() =>
+    TABS.map((tab) => ({ key: tab.key, label: this.isArabic() ? tab.ar : tab.en })),
+  );
+
+  protected readonly rows = computed(() => {
+    const arabic = this.isArabic();
+    const tab = TABS.find((entry) => entry.key === this.active()) ?? TABS[0];
+    return tab.rows.map((row) =>
+      row.map((field) => ({
+        id: field.id,
+        kind: field.kind,
+        label: arabic ? field.ar : field.en,
+        placeholder: arabic ? field.placeholderAr : field.placeholderEn,
+      })),
+    );
+  });
+
+  protected select(key: Tab['key']): void {
+    this.active.set(key);
+  }
 }
-
-const EN = {
-  firstName: 'First Name',
-  firstNamePlaceholder: 'Enter first name',
-  lastName: 'Last Name',
-  lastNamePlaceholder: 'Enter last name',
-  nationalId: 'National ID / Iqama Number',
-  nationalIdPlaceholder: 'Enter National ID / Iqama number',
-  email: 'Email Address',
-  emailPlaceholder: 'Enter email address',
-  mobile: 'Mobile Number',
-  mobilePlaceholder: '00 000 0000',
-  requestType: 'Select Request Type',
-  requestTypePlaceholder: 'Select request type',
-  subject: 'Message Subject',
-  subjectPlaceholder: 'Enter message subject',
-  details: 'Request Details',
-  detailsPlaceholder: 'Enter request details',
-  attachments: 'Attachments Upload',
-  attachmentsHint: 'The maximum allowed file size is 2 MB. Supported file formats include: PDF, JPG, and PNG.',
-  browse: 'Browse Files',
-  submit: 'Submit Request',
-  required: 'required',
-};
-
-const AR = {
-  firstName: 'الاسم الأول',
-  firstNamePlaceholder: 'أدخل الاسم الأول',
-  lastName: 'اسم العائلة',
-  lastNamePlaceholder: 'أدخل اسم العائلة',
-  nationalId: 'رقم الهوية / الإقامة',
-  nationalIdPlaceholder: 'أدخل رقم الهوية / الإقامة',
-  email: 'البريد الإلكتروني',
-  emailPlaceholder: 'أدخل البريد الإلكتروني',
-  mobile: 'رقم الجوال',
-  mobilePlaceholder: '00 000 0000',
-  requestType: 'نوع الطلب',
-  requestTypePlaceholder: 'اختر نوع الطلب',
-  subject: 'موضوع الرسالة',
-  subjectPlaceholder: 'أدخل موضوع الرسالة',
-  details: 'تفاصيل الطلب',
-  detailsPlaceholder: 'أدخل تفاصيل الطلب',
-  attachments: 'إرفاق الملفات',
-  attachmentsHint: 'الحد الأقصى المسموح لحجم الملف 2 ميجابايت. الصيغ المدعومة: PDF و JPG و PNG.',
-  browse: 'استعراض الملفات',
-  submit: 'إرسال الطلب',
-  required: 'مطلوب',
-};

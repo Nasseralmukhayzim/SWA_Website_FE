@@ -1,17 +1,36 @@
+:host {
+  display: block;
+  // The design runs this page on white and picks out individual bands in grey. The app's default
+  // body colour is that same grey, so without this every "white" band would disappear into it.
+  background: var(--color-bg-white);
+}
+
+// Full-bleed, as the design has it: the photo runs the whole width of the viewport rather than
+// stopping at the content column.
 .hero {
-  // Match the site's standard content width (same as .container elsewhere) instead of the
-  // photo's full native 1440px, so the hero aligns with the rest of the page below it.
-  max-width: var(--container-max-width);
-  margin-inline: auto;
-  height: 360px;
+  height: 491px;
   // Physical "right" (not center) — the photo's own baked-in Arabic branding sits in its right
   // third, so a center crop on narrow viewports was cutting the text off. Biasing right keeps
   // it in frame at any width, at the cost of cropping more of the plain water on the left.
   background: url('/brand/hero.png') right center / cover no-repeat;
 
+  @media (max-width: 1024px) {
+    height: 360px;
+  }
+
   @media (max-width: 640px) {
     height: 220px;
   }
+}
+
+// Home headings are plain bold text — the leading accent rule belongs to content pages, not here.
+.about h2,
+.news h2 {
+  margin: 0 0 var(--space-md);
+  font-size: var(--display-xs-size);
+  line-height: var(--display-xs-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
 }
 
 .about p {
@@ -20,42 +39,166 @@
   margin: 0;
 }
 
-.section-lead {
-  color: var(--color-text-paragraph);
-  max-width: 900px;
-  margin: 0 0 var(--space-3xl);
+// The CMS sections render through the shared component, so the home-specific treatment is
+// applied from here rather than changing how content pages look.
+:host ::ng-deep .page-section {
+  // The home page bands are grey; the pale blue tint the shared component defaults to belongs to
+  // the content pages, which use it for their hero strips.
+  &.page-section--tinted {
+    background: var(--color-bg-neutral-50);
+  }
+
+  // Card marks sit in a tinted medallion on the home page, matching the design's pictograms.
+  .card-logo {
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg-success-25);
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .stat-icon {
+    background: var(--color-bg-success-25);
+  }
+
+  // The design runs the figures at 1120px inside the 1280px container.
+  .stat-grid {
+    max-width: 1120px;
+  }
 }
 
-.tag-list {
+// Latest news strip.
+.news__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.news__all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--color-primary-600);
+  text-decoration: none;
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.news__intro {
+  margin: 0 0 var(--space-4xl);
+  max-width: 760px;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.news__grid {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  gap: var(--space-3xl);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.news__card {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-}
-
-.tag {
+  flex-direction: column;
+  gap: var(--space-3xl);
+  padding: var(--space-xl);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-neutral);
-  border-radius: var(--radius-full);
-  padding: var(--space-xs) var(--space-md);
-  font-size: var(--text-xs-size);
-  color: var(--color-text-paragraph);
+  border-radius: var(--radius-lg);
 }
 
-.access-service {
+.news__figure {
+  margin: 0;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--radius-md);
+  }
+}
+
+.news__title {
+  // Grows so the date and action line up across a row of cards.
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+
+  a {
+    color: var(--color-text-display);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.news__date {
+  margin: 0;
+}
+
+.news__date-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding-inline: var(--space-md);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-display);
+  font-size: var(--text-xs-size);
+  line-height: 1;
+}
+
+.news__more {
   align-self: flex-start;
-  margin-block-start: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border-radius: var(--radius-sm);
   background: var(--color-bg-black);
   color: var(--color-text-oncolor);
   text-decoration: none;
-  font-weight: var(--font-weight-medium);
   font-size: var(--text-sm-size);
-  padding: var(--space-md) var(--space-xl);
-  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
 
   &:hover {
-    opacity: 0.85;
-    color: var(--color-text-oncolor);
+    background: var(--color-bg-dark);
+  }
+}
+
+.news__empty {
+  grid-column: 1 / -1;
+  color: var(--color-text-paragraph);
+}
+
+@media (max-width: 420px) {
+  .news__grid {
+    grid-template-columns: 1fr;
   }
 }

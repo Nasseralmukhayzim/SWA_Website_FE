@@ -1,51 +1,150 @@
 @if (loading()) {
-  <p class="container section">Loading…</p>
+  <p class="container section">{{ t().loading }}</p>
 } @else if (notFound()) {
   <div class="container section">
-    <p role="alert" class="error">This page could not be found.</p>
-    <a routerLink="/pages">Back to pages</a>
+    <p role="alert" class="error">{{ t().notFound }}</p>
+    <a routerLink="/pages">{{ t().back }}</a>
   </div>
 } @else if (page(); as p) {
-  <div class="page-crumb">
-    <nav class="container" [attr.aria-label]="crumbLabel()">
-      <ol class="crumbs">
-        <li><a routerLink="/">{{ crumbHome() }}</a></li>
-        <li><a routerLink="/pages">{{ crumbAbout() }}</a></li>
-        <li aria-current="page">{{ p.title }}</li>
-      </ol>
-    </nav>
-  </div>
+  @if (showContactForm()) {
+    <!--
+      Contact Us runs the head and the form in one column with the channels card beside them, and
+      the card starts inside the band rather than below it — so the band is painted from the head
+      instead of wrapping the whole section, as it is on the service pages.
+      Main column first in the DOM so the card takes the far side: left in Arabic, right in English.
+    -->
+    <section class="contact-top">
+      <div class="container contact-layout">
+        <div class="contact-layout__main">
+          <div class="contact-head">
+            <nav class="contact-head__crumb" [attr.aria-label]="t().crumbLabel">
+              <ol class="crumbs">
+                <li><a routerLink="/">{{ t().home }}</a></li>
+                <li><a routerLink="/pages">{{ t().about }}</a></li>
+                <li aria-current="page">{{ p.title }}</li>
+              </ol>
+            </nav>
+            <h1 class="contact-head__title">{{ p.title }}</h1>
+            @if (p.summary) {
+              <p class="contact-head__intro">{{ p.summary }}</p>
+            }
+          </div>
 
-  <!--
-    Intro follows the design's split: title and body on one side, a rounded image on the other.
-    Pages without a hero image simply run the text full width rather than leaving a gap.
-  -->
-  <section class="page-intro">
-    <div class="container page-intro__inner" [class.page-intro__inner--split]="p.heroImageId">
-      <div class="page-intro__text">
-        <h1>{{ p.title }}</h1>
-        @if (p.summary) {
-          <p class="page-intro__summary">{{ p.summary }}</p>
-        }
-        @if (bodyText(); as body) {
-          <p class="page-intro__body">{{ body }}</p>
+          <app-contact-form class="contact-layout__form" />
+        </div>
+
+        @if (channelsSection(); as channels) {
+          <app-contact-channels class="contact-layout__card" [section]="channels" />
         }
       </div>
+    </section>
 
-      @if (p.heroImageId) {
-        <figure class="page-intro__figure">
-          <app-media-image [mediaId]="p.heroImageId" variant="hero" [alt]="p.title" />
-        </figure>
+    @for (section of otherSections(); track $index) {
+      <app-page-section [section]="section" [tinted]="$index % 2 === 1" variant="feature" />
+    }
+  } @else {
+    <!--
+      Hero band: breadcrumb and title only, on the design's pale blue strip. The summary, prose and
+      picture belong to the body below it, not to the band.
+    -->
+    <section class="page-hero">
+      <div class="container">
+        <nav class="page-hero__crumb" [attr.aria-label]="t().crumbLabel">
+          <ol class="crumbs">
+            <li><a routerLink="/">{{ t().home }}</a></li>
+            <li><a routerLink="/pages">{{ t().about }}</a></li>
+            <li aria-current="page">{{ p.title }}</li>
+          </ol>
+        </nav>
+        <h1 class="page-hero__title">{{ p.title }}</h1>
+      </div>
+    </section>
+
+    <div class="container page-layout" [class.page-layout--wide]="contents().length === 0">
+      <!--
+        Contents first in the DOM so it takes the reading edge — right in Arabic, left in English —
+        and so it is announced before the prose it indexes.
+      -->
+      @if (contents().length) {
+        <nav class="page-toc" [attr.aria-label]="t().contents">
+          <p class="page-toc__label">{{ t().contents }}</p>
+          <ul class="page-toc__list">
+            @for (entry of contents(); track entry.id) {
+              <li>
+                <a
+                  class="page-toc__link"
+                  [class.is-active]="entry.id === activeId()"
+                  [href]="'#' + entry.id"
+                  [attr.aria-current]="entry.id === activeId() ? 'true' : null"
+                  (click)="goTo($event, entry.id)"
+                >{{ entry.label }}</a>
+              </li>
+            }
+          </ul>
+        </nav>
       }
-    </div>
-  </section>
 
-  @for (section of p.sections; track $index) {
-    <app-page-section [section]="section" [tinted]="$index % 2 === 1" variant="feature" />
+      <div class="page-layout__main">
+        <section class="page-block" [id]="overviewId" [attr.data-section-id]="overviewId">
+          <h2 class="page-block__heading">{{ t().overview }}</h2>
+          <!--
+            The design opens with the page's own prose. The summary is the standfirst the CMS also
+            uses elsewhere on the site, so it only appears here when there is no body to show.
+          -->
+          @if (bodyText(); as body) {
+            <p class="page-block__body">{{ body }}</p>
+          } @else if (p.summary) {
+            <p class="page-block__body">{{ p.summary }}</p>
+          }
+        </section>
+
+        <!--
+          The opening prose sits beside the hero picture. Text first in the DOM so the picture takes
+          the far edge in both directions.
+        -->
+        @if (leadSections().length || p.heroImageId) {
+          <div class="page-lead" [class.page-lead--text-only]="!p.heroImageId">
+            <div class="page-lead__text">
+              @for (entry of leadSections(); track entry.id) {
+                <section class="page-block" [id]="entry.id" [attr.data-section-id]="entry.id">
+                  @if (entry.section.heading) {
+                    <h2 class="page-block__heading">{{ entry.section.heading }}</h2>
+                  }
+                  @if (entry.section.body) {
+                    <div class="page-block__body rich-text" [innerHTML]="entry.section.body"></div>
+                  }
+                </section>
+              }
+            </div>
+
+            @if (p.heroImageId) {
+              <figure class="page-lead__figure">
+                <app-media-image [mediaId]="p.heroImageId" variant="hero" [alt]="p.title" />
+              </figure>
+            }
+          </div>
+        }
+
+        @for (entry of restSections(); track entry.id) {
+          <div [id]="entry.id" [attr.data-section-id]="entry.id">
+            <app-page-section
+              [section]="entry.section"
+              variant="feature"
+              [panelled]="isPanelled(entry.section)"
+              [plainHeading]="isPanelled(entry.section)"
+              [flush]="true"
+            />
+          </div>
+        }
+      </div>
+    </div>
   }
 
-  <!-- The Contact Us design carries a form, which is not something the CMS can express as a section. -->
-  @if (showContactForm()) {
-    <app-contact-form />
+  @if (p.updatedAtUtc) {
+    <div class="page-updated">
+      <div class="container">
+        <p>{{ t().lastModified }}: {{ p.updatedAtUtc | date: 'longDate' }}</p>
+      </div>
+    </div>
   }
 }

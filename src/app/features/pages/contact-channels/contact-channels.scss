@@ -1,0 +1,166 @@
+:host {
+  display: block;
+}
+
+// Contact card — Figma node 3145:27741. A single bordered card, 416px wide with 40px of padding,
+// holding the channels stacked with their marks on the reading edge.
+.channels {
+  padding: var(--space-5xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+}
+
+.channels__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
+}
+
+.channels__intro {
+  margin: 0 0 var(--space-xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.channels__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  // The design sets a 68px pitch on 52px rows — 16px between channels.
+  gap: var(--space-xl);
+}
+
+// Text first, mark second: in a flex row the mark then lands on the trailing edge in LTR and the
+// leading edge in RTL, which is where the design puts it in both directions.
+.channel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.channel__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.channel__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 28px;
+  color: var(--color-primary-600);
+
+  ::ng-deep img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.channel__label {
+  margin: 0;
+  color: var(--color-text-display);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+  font-weight: var(--font-weight-bold);
+}
+
+.channel__value {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+
+  a,
+  .channel__code {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-primary-600);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.channel__detail {
+  margin: var(--space-md) 0 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.channel__map {
+  margin: var(--space-md) 0 0;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: 100%;
+    height: 221px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+  }
+}
+
+.channels__social {
+  margin-block-start: var(--space-xl);
+  text-align: center;
+}
+
+.channels__social-title {
+  margin: 0 0 var(--space-xl);
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
+}
+
+.channels__social-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+  // The brand order is fixed rather than reading order, so it does not flip with the page.
+  direction: ltr;
+}
+
+// Filled, not outlined: the design gives these a light grey tile rather than a bordered box.
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-neutral-100);
+  color: var(--color-text-default);
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .channels {
+    padding: var(--space-3xl);
+  }
+}

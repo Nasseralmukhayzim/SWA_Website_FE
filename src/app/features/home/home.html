@@ -1,43 +1,55 @@
-<section class="hero"></section>
+<!-- Hero: a single full-bleed image, as in the design, with its wordmark baked into the artwork. -->
+<section class="hero" role="img" [attr.aria-label]="t().heroAlt"></section>
 
 @if (error()) {
-  <p role="alert" class="error container">Something went wrong loading this page's content. Please try again later.</p>
+  <p role="alert" class="error container">{{ t().error }}</p>
 }
 
 @if (homePage(); as home) {
   <section class="section container about">
-    <div class="section-header">
-      <h2>{{ aboutHeading() }}</h2>
-      <a class="section-header__link" routerLink="/pages">More →</a>
-    </div>
+    <h2>{{ t().about }}</h2>
     <p>{{ home.body }}</p>
   </section>
 
   @for (section of home.sections; track $index) {
-    <app-page-section [section]="section" [tinted]="$index % 2 === 1" />
+    <app-page-section
+      [section]="section"
+      [tinted]="isTinted(section, $index)"
+      variant="feature"
+      [plainHeading]="true"
+      [autoLayout]="true"
+    />
   }
 }
 
-<section class="section container">
-  <div class="section-header">
-    <h2>Latest News</h2>
-    <a class="section-header__link" routerLink="/news">View all news →</a>
+<section class="section container news">
+  <div class="news__head">
+    <h2>{{ t().news }}</h2>
+    <a class="news__all" routerLink="/news">
+      <span>{{ t().viewAll }}</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M16 10H4M9 5l-5 5 5 5" />
+      </svg>
+    </a>
   </div>
+  <p class="news__intro">{{ t().newsIntro }}</p>
+
   @if (!loading()) {
-    <ul class="card-grid">
+    <ul class="news__grid">
       @for (item of latestNews(); track item.id) {
-        <li class="card">
-          <app-media-image [mediaId]="item.heroImageId" variant="image" [alt]="item.title" />
-          <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
-          @if (item.summary) {
-            <p>{{ item.summary }}</p>
-          }
-          <p class="meta">{{ item.createdAtUtc | date }}</p>
-          <a class="access-service" [routerLink]="['/news', item.slug]">Read More</a>
+        <li class="news__card">
+          <figure class="news__figure">
+            <app-media-image [mediaId]="item.heroImageId" variant="image" [alt]="item.title" />
+          </figure>
+          <h3 class="news__title">
+            <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
+          </h3>
+          <p class="news__date"><span class="news__date-pill">{{ formatDate(item) }}</span></p>
+          <a class="news__more" [routerLink]="['/news', item.slug]">{{ t().readMore }}</a>
         </li>
       }
       @empty {
-        <li>No news yet.</li>
+        <li class="news__empty">{{ t().empty }}</li>
       }
     </ul>
   }

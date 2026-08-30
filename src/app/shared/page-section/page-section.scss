@@ -17,6 +17,89 @@
   background: var(--color-bg-info-25);
 }
 
+// Placed inside a column the host already sized and padded, so the section contributes only its
+// own content.
+.page-section--flush {
+  padding-block: 0;
+}
+
+// Home-page treatment: plain bold headings, no leading accent rule.
+.page-section--plain h2 {
+  padding-inline-start: 0;
+  border-inline-start: 0;
+  font-size: var(--display-xs-size);
+  line-height: var(--display-xs-line);
+}
+
+// The design wraps the affiliated-entities block in a tinted, rounded panel; every other section
+// runs straight on the page background.
+.section-inner--panel {
+  padding: var(--space-5xl);
+  background: var(--color-bg-info-25);
+  border-radius: var(--radius-xl);
+
+  // Four to a row in the design, and the mark is a logo rather than a photograph — so it is
+  // contained inside a fixed band instead of being cropped to fill one.
+  .card-grid--feature {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .card--feature {
+    text-align: center;
+    align-items: center;
+
+    ::ng-deep .media-image--image,
+    ::ng-deep .media-image-placeholder--image {
+      height: 120px;
+      object-fit: contain;
+      background: none;
+    }
+  }
+}
+
+// Content pages draw their card blocks on a grey sheet, wider-padded than the home page's panel
+// and with a plain heading — the accent rule belongs to the prose that runs between them.
+.section-inner--sheet {
+  padding: var(--space-5xl) var(--space-8xl);
+  background: var(--color-bg-neutral-50);
+  border-radius: var(--radius-lg);
+
+  // The sheet's own heading keeps the reading edge — only the cards inside it are centred.
+  h2 {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  // Column count comes from the item count, the way the design picks it.
+  .card-grid--feature {
+    grid-template-columns: repeat(var(--card-columns, 3), minmax(0, 1fr));
+  }
+
+  .card--feature {
+    align-items: center;
+    text-align: center;
+  }
+
+  .prose-list {
+    text-align: start;
+  }
+
+  // The marks are pictograms here, so they sit in the design's tinted medallion.
+  .card-logo {
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg-success-25);
+
+    ::ng-deep img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
 .section-intro {
   color: var(--color-text-paragraph);
   max-width: 720px;
@@ -25,6 +108,17 @@
 
 .body {
   color: var(--color-text-paragraph);
+}
+
+.prose-list {
+  margin: 0;
+  padding-inline-start: var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
 }
 
 // Rich text arrives from the CMS editor as real markup, so the block elements it emits need to
@@ -56,13 +150,22 @@
   }
 }
 
+// The design runs the figures narrower than the container and centres them, so a row that does not
+// fill leaves equal air either side rather than hanging off the reading edge.
 .stat-grid {
   list-style: none;
-  margin: 0;
+  margin-inline: auto;
+  margin-block: 0;
   padding: 0;
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-xl);
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.stat {
+  flex: 0 1 calc((100% - var(--space-xl) * 2) / 3);
+  min-width: 220px;
 }
 
 .stat {
@@ -108,6 +211,51 @@
   font-size: var(--text-sm-size);
 }
 
+// Logo strip — a mark above its name, six to a row in the design. Tiles keep their size whether or
+// not the mark has been uploaded, so the row stays even.
+.logo-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3xl);
+}
+
+.logo-strip__item {
+  flex: 0 1 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+}
+
+// Rendered even when the mark is missing, so every name in the row sits on the same line.
+.logo-strip__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: auto;
+    max-width: 160px;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0;
+    background: none;
+  }
+}
+
+.logo-strip__name {
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
 .card-grid {
   list-style: none;
   margin: 0;
@@ -120,6 +268,12 @@
 // The design lays feature cards three to a row (406px within a 1280px container).
 .card-grid--feature {
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+
+// A final card left alone on its own row runs the full width, which is how the design closes an
+// uneven grid.
+.card--wide {
+  grid-column: 1 / -1;
 }
 
 .card {
@@ -255,32 +409,75 @@
   }
 }
 
+// Timeline entries are cards like everything else on these pages, rather than a bare rule with text
+// hanging off it — the CMS offers this kind on any page, so it has to sit in the same design.
 .timeline {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  gap: var(--space-3xl);
+  // auto-fill, not auto-fit: a lone entry should sit in a card the size of the others rather than
+  // stretching the full width of the page.
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.timeline__entry {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4xl);
-  border-block-start: 2px solid var(--color-border-neutral);
-  padding-block-start: var(--space-3xl);
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-3xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-lg);
+  // The accent sits on the reading edge of the card, mirroring with the document direction.
+  border-inline-start: 3px solid var(--color-primary-600);
+}
 
-  li {
-    flex: 1;
-    min-width: 120px;
-    padding-inline-start: var(--space-xl);
-    border-inline-start: 3px solid var(--color-primary-600);
+.timeline__marker {
+  font-size: var(--text-xl-size);
+  line-height: var(--text-xl-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-600);
+}
+
+.timeline__label {
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+// Small phones: the 240–340px track floors exceed the content box, so drop to one column.
+@media (max-width: 420px) {
+  .card-grid,
+  .card-grid--feature,
+  .timeline {
+    grid-template-columns: 1fr;
   }
 
-  strong {
-    display: block;
-    font-size: var(--text-xl-size);
-    color: var(--color-primary-600);
+  .stat {
+    flex-basis: 100%;
   }
 
-  span,
-  .timeline-label {
-    color: var(--color-text-paragraph);
-    font-size: var(--text-sm-size);
+  .section-inner--panel {
+    padding: var(--space-3xl);
+  }
+}
+
+@media (max-width: 1100px) {
+  .section-inner--panel .card-grid--feature,
+  .section-inner--sheet .card-grid--feature {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .section-inner--sheet {
+    padding: var(--space-4xl);
+  }
+}
+
+@media (max-width: 560px) {
+  .section-inner--panel .card-grid--feature,
+  .section-inner--sheet .card-grid--feature {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

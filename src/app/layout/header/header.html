@@ -1,22 +1,81 @@
 <header class="site-header">
-  <div class="site-header__row">
-    <a routerLink="/" class="site-header__logo" [attr.aria-label]="homeLabel()">
+  <div class="container site-header__row">
+    <a routerLink="/" class="site-header__logo" [attr.aria-label]="t().home">
       <img src="/brand/logo-swa-lockup.svg" alt="" width="90" height="71" />
     </a>
 
-    <nav class="site-header__nav" [attr.aria-label]="navLabel()">
-      @for (item of navItems(); track item.path) {
-        <a [routerLink]="item.path" routerLinkActive="is-active" [routerLinkActiveOptions]="item.options">
-          {{ item.label }}
-        </a>
+    <button
+      type="button"
+      class="site-header__burger"
+      [attr.aria-label]="mobileOpen() ? t().closeMenu : t().openMenu"
+      [attr.aria-expanded]="mobileOpen()"
+      (click)="toggleMobile()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        @if (mobileOpen()) {
+          <path d="m6 6 12 12M18 6 6 18" />
+        } @else {
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        }
+      </svg>
+    </button>
+
+    <!--
+      Each top-level item owns a panel. The label is a button rather than a link because its job is
+      to disclose the panel; the destinations live inside it.
+    -->
+    <nav class="site-header__nav" [class.site-header__nav--open]="mobileOpen()" [attr.aria-label]="t().nav">
+      @for (menu of menus(); track menu.key) {
+        <div class="nav-item" [class.nav-item--open]="isOpen(menu.key)">
+          <button
+            type="button"
+            class="nav-item__label"
+            [attr.aria-expanded]="isOpen(menu.key)"
+            [attr.aria-controls]="'menu-' + menu.key"
+            (click)="toggle(menu.key)"
+          >
+            <span>{{ menu.label }}</span>
+            <svg class="nav-item__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+          </button>
+
+          @if (isOpen(menu.key)) {
+            <div class="submenu" [id]="'menu-' + menu.key">
+              <div class="submenu__inner">
+                @for (column of menu.columns; track $index) {
+                  <div class="submenu__col">
+                    @if (column.heading) {
+                      <p class="submenu__heading">{{ column.heading }}</p>
+                    }
+                    <ul class="submenu__list">
+                      @for (link of column.links; track $index) {
+                        <li>
+                          <a [routerLink]="link.path" (click)="close()">{{ link.label }}</a>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
       }
     </nav>
 
     <div class="site-header__actions">
-      <button type="button" class="site-header__action" (click)="toggleLanguage()">
-        <span>{{ languageLabel() }}</span>
+      <button type="button" class="site-header__language" (click)="toggleLanguage()">
         <img src="/brand/icon-globe.svg" alt="" width="24" height="24" />
+        <span>{{ t().language }}</span>
       </button>
+
+      <a class="site-header__portal" [href]="portalUrl" target="_blank" rel="noopener noreferrer">
+        <span>{{ t().portal }}</span>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 3h6v6M17 3l-8 8M15 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4" />
+        </svg>
+      </a>
     </div>
   </div>
 </header>

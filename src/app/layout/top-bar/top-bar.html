@@ -1,0 +1,43 @@
+<div class="top-bar">
+  <div class="container top-bar__inner">
+    <!--
+      The design also shows the current weather here. There is no weather source wired up, so the
+      location, date and time are shown and the forecast is left out rather than faked.
+    -->
+    <ul class="top-bar__meta">
+      <li>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M13 6.7c0 3.6-5 8-5 8s-5-4.4-5-8a5 5 0 0 1 10 0Z" />
+          <circle cx="8" cy="6.5" r="1.8" />
+        </svg>
+        <span>{{ t().city }}</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.2" />
+          <path d="M8 4.6V8l2.2 1.4" />
+        </svg>
+        <span>{{ time() }}</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2.4" y="3.4" width="11.2" height="10.2" rx="2" />
+          <path d="M2.4 6.6h11.2M5.6 2v2.6M10.4 2v2.6" />
+        </svg>
+        <span>{{ date() }}</span>
+      </li>
+    </ul>
+
+    <!--
+      Site-wide search has no page behind it yet, so this is a placeholder control rather than a
+      link to nowhere. Point it at a search route once one exists.
+    -->
+    <button type="button" class="top-bar__search" disabled>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <circle cx="7.2" cy="7.2" r="4.6" />
+        <path d="m10.8 10.8 2.8 2.8" />
+      </svg>
+      <span>{{ t().search }}</span>
+    </button>
+  </div>
+</div>

@@ -4,10 +4,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ContentApiService } from '../../../core/services/content-api.service';
 import { LanguageService } from '../../../core/services/language.service';
-import { ServiceDeliveryType, ServiceDetail as ServiceDetailModel } from '../../../core/models/service.model';
+import {
+  ServiceDeliveryType,
+  ServiceDetail as ServiceDetailModel,
+  ServiceListItem,
+} from '../../../core/models/service.model';
 import { MediaImage } from '../../../shared/media-image/media-image';
 
 type TabKey = 'steps' | 'requiredDocuments' | 'terms' | 'objectives';
+type FactIcon = 'audience' | 'duration' | 'channels' | 'fee' | 'phone';
+/** Matches the three tag colourways in the design: neutral, green and blue. */
+type TagTone = 'neutral' | 'success' | 'info';
 
 interface Tab {
   key: TabKey;
@@ -17,7 +24,7 @@ interface Tab {
 }
 
 const CTA_LABELS: Record<ServiceDeliveryType, { en: string; ar: string }> = {
-  [ServiceDeliveryType.Request]: { en: 'Start service', ar: 'بدء الخدمة' },
+  [ServiceDeliveryType.Request]: { en: 'Start service', ar: 'ابدأ الخدمة' },
   [ServiceDeliveryType.Inquiry]: { en: 'Make an inquiry', ar: 'الاستعلام' },
   [ServiceDeliveryType.Calculator]: { en: 'Open calculator', ar: 'فتح الحاسبة' },
   [ServiceDeliveryType.Payment]: { en: 'Pay now', ar: 'ادفع الآن' },
@@ -26,7 +33,9 @@ const CTA_LABELS: Record<ServiceDeliveryType, { en: string; ar: string }> = {
 
 const TEXT = {
   en: {
-    services: 'Services',
+    home: 'Home',
+    services: 'E-services',
+    breadcrumb: 'Breadcrumb',
     steps: 'Steps',
     requiredDocuments: 'Required documents',
     terms: 'Terms of use',
@@ -36,24 +45,45 @@ const TEXT = {
     channels: 'Service channels',
     fee: 'Service cost',
     phone: 'Phone',
+    faq: 'Frequently asked questions',
+    faqLink: 'SWA-FAQ’s page',
+    guideTitle: 'Service guide',
     guide: 'Download the user guide',
+    relatedTitle: 'Related services',
+    viewAll: 'View all',
+    viewDetails: 'View details',
+    commentsTitle: 'Comments and suggestions',
+    commentsBody:
+      'For any question or feedback about government services, please fill in the required information.',
+    contactUs: 'Contact us',
     lastModified: 'Last modified',
     notFound: 'This service could not be found.',
     back: 'Back to services',
     loading: 'Loading…',
   },
   ar: {
-    services: 'الخدمات',
+    home: 'الرئيسية',
+    services: 'الخدمات الإلكترونية',
+    breadcrumb: 'مسار التنقل',
     steps: 'الخطوات',
     requiredDocuments: 'المستندات المطلوبة',
     terms: 'شروط الاستخدام',
     objectives: 'الأهداف',
     audience: 'الفئة المستهدفة',
     duration: 'مدة الخدمة',
-    channels: 'قنوات الخدمة',
+    channels: 'قنوات تقديم الخدمة',
     fee: 'تكلفة الخدمة',
     phone: 'الهاتف',
+    faq: 'الاسئلة الشائعة',
+    faqLink: 'SWA-FAQ’s page',
+    guideTitle: 'دليل الخدمة',
     guide: 'تحميل دليل المستخدم',
+    relatedTitle: 'خدمات ذات صلة',
+    viewAll: 'عرض الكل',
+    viewDetails: 'عرض التفاصيل',
+    commentsTitle: 'التعليقات والاقتراحات',
+    commentsBody: 'لأي استفسار أو ملاحظات حول الخدمات الحكومية، يرجى ملء المعلومات المطلوبة.',
+    contactUs: 'تواصل معنا',
     lastModified: 'تاريخ آخر تعديل',
     notFound: 'تعذر العثور على هذه الخدمة.',
     back: 'العودة إلى الخدمات',
@@ -89,6 +119,7 @@ export class ServiceDetail {
   protected readonly loading = signal(true);
   protected readonly notFound = signal(false);
   protected readonly guideUrl = signal<string | null>(null);
+  protected readonly related = signal<ServiceListItem[]>([]);
 
   private readonly activeTabKey = signal<TabKey | null>(null);
 
@@ -105,6 +136,22 @@ export class ServiceDetail {
     return this.language.language() === 'ar' ? labels.ar : labels.en;
   });
 
+  /**
+   * The tags under the title, in the design's reading order: who the service is for, which family
+   * it belongs to, then where it sits in the water value chain — one colourway each.
+   */
+  protected readonly tags = computed<{ label: string; tone: TagTone }[]>(() => {
+    const service = this.service();
+    if (!service) {
+      return [];
+    }
+    return [
+      ...service.audienceNames.map((label) => ({ label, tone: 'neutral' as const })),
+      ...(service.categoryName ? [{ label: service.categoryName, tone: 'success' as const }] : []),
+      ...(service.activityTypeName ? [{ label: service.activityTypeName, tone: 'info' as const }] : []),
+    ];
+  });
+
   /** Only tabs that actually carry content, so an empty service shows no empty tab strip. */
   protected readonly tabs = computed<Tab[]>(() => {
     const service = this.service();
@@ -115,8 +162,8 @@ export class ServiceDetail {
     return (
       [
         { key: 'steps' as const, label: t.steps, lines: toLines(service.steps) },
-        { key: 'requiredDocuments' as const, label: t.requiredDocuments, lines: toLines(service.requiredDocuments) },
         { key: 'terms' as const, label: t.terms, lines: toLines(service.terms) },
+        { key: 'requiredDocuments' as const, label: t.requiredDocuments, lines: toLines(service.requiredDocuments) },
         { key: 'objectives' as const, label: t.objectives, lines: toLines(service.objectives) },
       ] satisfies Tab[]
     ).filter((tab) => tab.lines.length > 0);
@@ -130,19 +177,46 @@ export class ServiceDetail {
     return tabs.find((tab) => tab.key === this.activeTabKey()) ?? tabs[0];
   });
 
-  protected readonly facts = computed(() => {
+  /** The card's first block: the plain label/value facts, each with its own icon. */
+  protected readonly facts = computed<{ icon: FactIcon; label: string; value: string }[]>(() => {
     const service = this.service();
     if (!service) {
       return [];
     }
     const t = this.t();
     return [
-      { icon: 'audience', label: t.audience, value: service.audienceNames.join('، ') },
-      { icon: 'duration', label: t.duration, value: service.deliveryTime ?? '' },
-      { icon: 'channels', label: t.channels, value: service.channelNames.join('، ') },
-      { icon: 'fee', label: t.fee, value: service.fee ?? '' },
-      { icon: 'phone', label: t.phone, value: service.supportPhone ?? '' },
+      { icon: 'audience' as const, label: t.audience, value: service.audienceNames.join('، ') },
+      { icon: 'duration' as const, label: t.duration, value: service.deliveryTime ?? '' },
+      { icon: 'channels' as const, label: t.channels, value: service.channelNames.join(' - ') },
+      { icon: 'fee' as const, label: t.fee, value: service.fee ?? '' },
     ].filter((fact) => fact.value.length > 0);
+  });
+
+  /**
+   * The card's second block. These read as links rather than plain values, and the design gives
+   * only the phone row an icon — the FAQ row is deliberately icon-less.
+   */
+  protected readonly contactLinks = computed(() => {
+    const service = this.service();
+    if (!service) {
+      return [];
+    }
+    const t = this.t();
+    return [
+      { key: 'faq', icon: null, label: t.faq, value: t.faqLink, route: '/faqs', href: null },
+      ...(service.supportPhone
+        ? [
+            {
+              key: 'phone',
+              icon: 'phone' as const,
+              label: t.phone,
+              value: service.supportPhone,
+              route: null,
+              href: `tel:${service.supportPhone}`,
+            },
+          ]
+        : []),
+    ];
   });
 
   constructor() {
@@ -157,6 +231,7 @@ export class ServiceDetail {
       this.notFound.set(false);
       this.activeTabKey.set(null);
       this.guideUrl.set(null);
+      this.related.set([]);
 
       this.api.getService(slug, lang).subscribe({
         next: (service) => {
@@ -168,6 +243,7 @@ export class ServiceDetail {
               error: () => this.guideUrl.set(null),
             });
           }
+          this.loadRelated(service, lang);
         },
         error: () => {
           this.service.set(null);
@@ -175,6 +251,27 @@ export class ServiceDetail {
           this.loading.set(false);
         },
       });
+    });
+  }
+
+  /**
+   * "Related" means the same service family. The list endpoint takes a category id and this page
+   * only holds the slug, so it filters the (small) published list client-side rather than spending
+   * a round trip resolving the lookup first.
+   */
+  private loadRelated(service: ServiceDetailModel, lang: string): void {
+    if (!service.categorySlug) {
+      return;
+    }
+    this.api.getServices({ lang, pageSize: 100 }).subscribe({
+      next: (result) => {
+        this.related.set(
+          result.items
+            .filter((item) => item.categorySlug === service.categorySlug && item.slug !== service.slug)
+            .slice(0, 3),
+        );
+      },
+      error: () => this.related.set([]),
     });
   }
 

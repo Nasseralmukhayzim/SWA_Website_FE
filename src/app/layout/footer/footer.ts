@@ -21,8 +21,6 @@ interface SocialChannel {
   /** Official account URL. Left undefined until the real handle is supplied, in which case the
    *  icon renders as a non-interactive mark rather than a link that goes nowhere. */
   url?: string;
-  /** The design places LinkedIn as a bare 32px mark rather than a bordered icon button. */
-  bare?: boolean;
 }
 
 // Ordered as the design reads: About first, social channels last.
@@ -87,7 +85,7 @@ export class Footer {
     { name: 'Facebook', icon: '/brand/social-facebook.svg' },
     { name: 'Instagram', icon: '/brand/social-instagram.svg' },
     { name: 'Snapchat', icon: '/brand/social-snapchat.svg' },
-    { name: 'LinkedIn', icon: '/brand/social-linkedin.svg', bare: true },
+    { name: 'LinkedIn', icon: '/brand/social-linkedin.svg' },
     { name: 'X', icon: '/brand/social-x.svg' },
     { name: 'YouTube', icon: '/brand/social-youtube.svg' },
     { name: 'TikTok', icon: '/brand/social-tiktok.svg' },

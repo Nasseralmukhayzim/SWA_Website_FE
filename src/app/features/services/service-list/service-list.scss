@@ -310,6 +310,7 @@
 // Service card: the mark sits above the title, as a 48px medallion.
 .service-card {
   gap: var(--space-3xl);
+  height: 100%;
 }
 
 .service-card__icon {
@@ -320,6 +321,12 @@
   height: 48px;
   border-radius: var(--radius-full);
   background: var(--color-bg-neutral-100);
+
+  // Nothing to show: hold the space so the card keeps its shape, but do not paint a disc that
+  // would read as a broken image.
+  &--empty {
+    background: transparent;
+  }
 
   ::ng-deep img {
     width: 24px;
@@ -352,5 +359,22 @@
 
   .tabs {
     flex-wrap: wrap;
+  }
+}
+
+// Service cards keep a fixed track width so a single result is the same size as one in a full
+// row. The shared grid uses auto-fit, which collapses the empty tracks and lets a lone card
+// stretch the whole way across; auto-fill keeps them, matching the design's 416px card sitting
+// at one end of an otherwise empty row.
+.card-grid {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  // Every row takes the height of the tallest card, so cards stay one size whatever their
+  // description length or whether they carry an icon.
+  grid-auto-rows: 1fr;
+}
+
+@media (max-width: 420px) {
+  .card-grid {
+    grid-template-columns: 1fr;
   }
 }

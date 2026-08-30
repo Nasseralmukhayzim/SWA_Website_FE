@@ -1,115 +1,269 @@
+// Content page shell — Figma node 2534:13753 (لمحة عن الهيئة و استراتيجتها), shared by every page
+// under "عن الهيئة". Logical properties throughout so the layout mirrors for English.
+
 :host {
   display: block;
+  // The design runs these pages on white and picks out individual blocks in grey; the app's body
+  // colour is that same grey, so it has to be painted over here.
+  background: var(--color-bg-white);
 }
 
-.page-crumb {
-  background: var(--color-bg-body);
-  padding-block-start: var(--space-3xl);
+// Hero: breadcrumb and title on the pale blue strip, 232px tall in the design.
+.page-hero {
+  background: var(--color-bg-info-25);
+  padding-block: var(--space-7xl);
 }
 
-.crumbs {
+.page-hero__crumb {
+  margin-block-end: var(--space-3xl);
+}
+
+.page-hero__title {
+  margin: 0;
+  font-size: var(--display-md-size);
+  line-height: var(--display-md-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-default);
+}
+
+// Contents list beside the content: 150px in the design, 32px from the column it indexes.
+.page-layout {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: var(--space-4xl);
+  align-items: start;
+  padding-block: var(--space-5xl) var(--space-8xl);
+}
+
+// Pages with nothing to index run the content across the whole container.
+.page-layout--wide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-toc {
+  position: sticky;
+  // Clears the site header, which stays on screen while the page scrolls.
+  inset-block-start: var(--space-8xl);
+}
+
+.page-toc__label {
+  margin: 0 0 var(--space-md);
+  color: var(--color-text-disabled);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
+.page-toc__list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-md);
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.page-toc__link {
+  display: block;
+  padding-block: var(--space-xs);
+  // Room for the marker, so the label does not shift when an entry becomes current.
+  padding-inline-start: var(--space-lg);
+  border-inline-start: 2px solid transparent;
+  color: var(--color-text-paragraph);
+  text-decoration: none;
   font-size: var(--text-sm-size);
   line-height: var(--text-sm-line);
-  color: var(--color-text-disabled);
 
-  li + li::before {
-    content: '›';
-    margin-inline-end: var(--space-md);
-    color: var(--color-text-disabled);
-  }
-
-  a {
-    color: var(--color-text-paragraph);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-.page-intro {
-  background: var(--color-bg-body);
-  padding-block: var(--space-5xl);
-}
-
-.page-intro__inner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4xl);
-  flex-wrap: wrap;
-}
-
-.page-intro__text {
-  flex: 1;
-  min-width: 280px;
-
-  h1 {
-    margin: 0 0 var(--space-3xl);
-    padding-inline-start: var(--space-xl);
-    border-inline-start: 3px solid var(--color-primary-600);
-    font-size: var(--display-sm-size);
-    line-height: var(--display-sm-line);
-    font-weight: var(--font-weight-bold);
+  &:hover {
     color: var(--color-text-default);
   }
+
+  &.is-active {
+    border-inline-start-color: var(--color-primary-600);
+    color: var(--color-text-display);
+    font-weight: var(--font-weight-bold);
+  }
 }
 
-.page-intro__summary {
+.page-layout__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7xl);
+}
+
+// A prose block: heading with the design's leading accent rule, then its text.
+.page-block__heading {
   margin: 0 0 var(--space-xl);
-  color: var(--color-text-paragraph);
-  font-size: var(--text-xl-size);
-  line-height: var(--text-xl-line);
+  padding-inline-start: var(--space-xl);
+  border-inline-start: 3px solid var(--color-primary-600);
+  font-size: var(--display-xs-size);
+  line-height: var(--display-xs-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
 }
 
-.page-intro__body {
+.page-block__summary,
+.page-block__body {
   margin: 0;
-  max-width: 64ch;
-  white-space: pre-line;
-  color: var(--color-text-default);
+  color: var(--color-text-paragraph);
   font-size: var(--text-md-size);
   line-height: var(--text-md-line);
 }
 
-// Only pages that actually have a hero image become two columns. The design pairs a 776px text
-// column with a 440px image at a 32px gap, so the text fills its column rather than keeping the
-// single-column reading cap — that cap is what left a gap between the copy and the picture.
-.page-intro__inner--split {
-  .page-intro__text {
-    flex: 1 1 0;
-    min-width: 320px;
-  }
+.page-block__summary + .page-block__body {
+  margin-block-start: var(--space-lg);
+}
 
-  .page-intro__summary,
-  .page-intro__body {
-    max-width: none;
+// The opening prose sits beside the hero picture; text first in the DOM so the picture takes the
+// far edge in both directions.
+.page-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: var(--space-4xl);
+  align-items: start;
+}
+
+.page-lead--text-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-lead__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5xl);
+}
+
+.page-lead__figure {
+  margin: 0;
+
+  ::ng-deep img,
+  ::ng-deep .media-image-placeholder {
+    width: 100%;
+    height: 400px;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
   }
 }
 
-.page-intro__figure {
-  // Narrower than the design's 440px so the intro copy keeps more of the row.
-  flex: 0 0 360px;
-  max-width: 100%;
-  margin: 0;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  aspect-ratio: 440 / 249;
+// Last modified strip closes the page.
+.page-updated {
+  background: var(--color-bg-neutral-50);
+  padding-block: var(--space-xl);
 
-  ::ng-deep img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  p {
+    margin: 0;
+    color: var(--color-text-paragraph);
+    font-size: var(--text-sm-size);
+    line-height: var(--text-sm-line);
+  }
+}
+
+// ---- Contact Us -----------------------------------------------------------------------------
+// The mint band is only as tall as the head, while the channels card beside it starts 40px inside
+// the band and hangs far below — so the band is painted from the head outwards rather than being
+// this section's own background.
+.contact-top {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  padding-block: var(--space-5xl) var(--space-8xl);
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 416px;
+  gap: var(--space-6xl);
+  align-items: start;
+}
+
+.contact-layout__main {
+  min-width: 0;
+}
+
+.contact-head {
+  position: relative;
+  margin-block-end: var(--space-4xl);
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block: calc(var(--space-5xl) * -1) calc(var(--space-5xl) * -1);
+    inset-inline: -100vw;
+    background: var(--color-bg-primary-25);
+  }
+}
+
+.contact-head__crumb {
+  margin-block-end: var(--space-3xl);
+}
+
+.contact-head__title {
+  margin: 0;
+  font-size: var(--display-md-size);
+  line-height: var(--display-md-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-default);
+}
+
+.contact-head__intro {
+  margin: var(--space-xl) 0 0;
+  // 720px of an 816px column in the design, held to the reading edge.
+  max-width: 720px;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+@media (max-width: 1100px) {
+  // The contents list stops earning its column before the prose does, so it folds away above the
+  // content rather than squeezing it.
+  .page-layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  @media (max-width: 900px) {
-    flex-basis: 100%;
+  .page-toc {
+    position: static;
+  }
+
+  .page-toc__list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
+  }
+
+  .page-lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page-lead__figure ::ng-deep img,
+  .page-lead__figure ::ng-deep .media-image-placeholder {
+    height: 320px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  // Stacked under the form, the card keeps the design's width rather than stretching the row.
+  .contact-layout__card {
+    max-width: 416px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-hero {
+    padding-block: var(--space-4xl);
+  }
+
+  .page-hero__title {
+    font-size: var(--display-sm-size);
+    line-height: var(--display-sm-line);
+  }
+
+  .page-layout__main {
+    gap: var(--space-5xl);
   }
 }

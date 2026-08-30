@@ -4,6 +4,25 @@
   box-sizing: border-box;
 }
 
+// Responsive safety nets: media never exceeds its column, and long unbroken strings (URLs,
+// emails, reference numbers) wrap instead of forcing the page sideways.
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+body {
+  overflow-wrap: break-word;
+}
+
 html,
 body {
   margin: 0;
@@ -320,4 +339,86 @@ a {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+// Breadcrumb trail. Shared because every content detail page carries the same one, and it has to
+// look identical on the pale bands the designs put it on.
+.crumbs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  color: var(--color-text-disabled);
+
+  li + li::before {
+    content: '›';
+    margin-inline-end: var(--space-md);
+    color: var(--color-text-disabled);
+  }
+
+  a {
+    color: var(--color-text-paragraph);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Service tags — one colourway per lookup: who the service is for, which family it belongs to and
+// which activity it covers. Shared so a tag reads the same wherever a service is listed.
+.service-tags {
+  list-style: none;
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.service-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding-inline: var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs-size);
+  line-height: var(--text-xs-line);
+  white-space: nowrap;
+}
+
+.service-tag--neutral {
+  background: var(--color-bg-neutral-50);
+  border-color: var(--color-border-neutral-secondary);
+  color: var(--color-text-paragraph);
+}
+
+.service-tag--success {
+  background: var(--color-bg-success-50);
+  border-color: var(--color-border-success-200);
+  color: var(--color-text-success);
+}
+
+.service-tag--info {
+  background: var(--color-bg-info-50);
+  border-color: var(--color-border-info-200);
+  color: var(--color-text-info);
+}
+
+// Small phones: every card grid collapses to one column. The minmax floors these grids use
+// (240–340px) exceed the content box below ~380px, which would otherwise push the page sideways.
+@media (max-width: 420px) {
+  .card-grid,
+  .news-grid,
+  .stat-grid,
+  .stamp__facts {
+    grid-template-columns: 1fr;
+  }
 }

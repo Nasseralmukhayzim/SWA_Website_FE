@@ -1,111 +1,114 @@
-// Service detail template. Everything uses logical properties so the layout mirrors for Arabic
-// without a direction-specific rule.
+// Service detail — Figma node 3356:16230. Everything uses logical properties so the layout mirrors
+// for Arabic without a direction-specific rule.
 
-.service-hero {
-  background: var(--color-primary-100);
-  border-block-end: 1px solid var(--color-border-neutral);
-  padding-block: var(--space-4xl);
+.service-top {
+  position: relative;
+  // The head paints the pale blue band behind itself from a negative z-index; isolating here keeps
+  // that layer inside this section instead of dropping behind the page background.
+  isolation: isolate;
+  // The band bleeds past the container to the viewport edges. Clipping only the inline axis keeps
+  // it off the horizontal scrollbar while leaving the card free to overhang vertically.
+  overflow-x: clip;
+  padding-block: var(--space-5xl) var(--space-7xl);
 }
 
-.service-hero__inner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4xl);
-  flex-wrap: wrap;
+// 416px card beside the content, 48px apart, both starting at the same top edge — which is what
+// puts the card 40px into the blue band, as the design has it.
+.service-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 416px;
+  gap: var(--space-6xl);
+  align-items: start;
 }
 
-.service-hero__main {
-  flex: 1;
-  min-width: 280px;
+// The main column comes first in the DOM so the card takes the far edge: left in Arabic, right in
+// English.
+.service-layout__main {
+  min-width: 0;
 }
 
-.service-hero__title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
+.service-head {
+  position: relative;
 
-  h1 {
-    margin: 0;
+  // The band is only as tall as this block while the card next to it hangs far below, so it is
+  // painted from here rather than being the section's own background. Tying its height to the head
+  // means it still frames the text once the title or summary wraps on a narrow screen.
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block: calc(var(--space-5xl) * -1) calc(var(--space-xl) * -1);
+    inset-inline: -100vw;
+    background: var(--color-bg-info-25);
   }
 }
 
-.service-hero__description {
-  margin-block: var(--space-xl) 0;
-  max-width: 70ch;
-  color: var(--color-text-paragraph);
+.service-head__crumb {
+  margin-block-end: var(--space-md);
 }
 
-.service-hero__cta {
+// Title and call to action share a line, sitting on the same baseline edge as in the design.
+.service-head__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.service-head__title {
+  margin: 0;
+  font-size: var(--display-sm-size);
+  line-height: var(--display-sm-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-default);
+}
+
+.service-head__cta {
   flex-shrink: 0;
-  display: inline-block;
-  background: var(--color-primary-600);
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-black);
   color: var(--color-text-oncolor);
   text-decoration: none;
-  font-weight: var(--font-weight-semibold);
-  padding: var(--space-lg) var(--space-4xl);
-  border-radius: var(--radius-sm);
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
 
   &:hover {
-    background: var(--color-primary-800);
+    background: var(--color-bg-dark);
   }
 }
 
-.chips {
-  list-style: none;
+.service-head__summary {
   margin: var(--space-xl) 0 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
 }
 
-.chip {
-  background: var(--color-primary-600);
-  color: var(--color-text-oncolor);
-  border-radius: var(--radius-sm);
-  padding: var(--space-xs) var(--space-lg);
-  font-size: var(--text-sm-size);
-  line-height: var(--text-sm-line);
+.service-info {
+  margin-block-start: var(--space-7xl);
 }
 
-.service-body {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4xl);
-  padding-block: var(--space-4xl);
-  flex-wrap: wrap;
-}
-
-.service-body__main {
-  flex: 1;
-  min-width: 300px;
-}
-
-.service-body__aside {
-  flex: 0 0 340px;
-
-  @media (max-width: 900px) {
-    flex-basis: 100%;
-  }
-}
-
+// The tabs sit flush against each other with their padding doing the spacing, and only the active
+// one is marked — the design draws no rule under the strip.
 .tabs {
   display: flex;
-  gap: var(--space-4xl);
   flex-wrap: wrap;
-  border-block-end: 1px solid var(--color-border-neutral);
 }
 
 .tabs__tab {
+  position: relative;
   background: none;
   border: none;
-  border-block-end: 3px solid transparent;
-  margin-block-end: -1px;
-  padding: var(--space-md) 0;
+  padding: var(--space-lg) var(--space-xl);
   cursor: pointer;
   font-family: var(--font-family-text);
   font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
   color: var(--color-text-paragraph);
 
   &:hover {
@@ -115,7 +118,16 @@
   &.is-active {
     color: var(--color-text-display);
     font-weight: var(--font-weight-semibold);
-    border-block-end-color: var(--color-primary-600);
+
+    // Inset to the tab's padding so the mark is as wide as the label, not as wide as the hit area.
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block-end: 0;
+      inset-inline: var(--space-xl);
+      height: 3px;
+      background: var(--color-primary-600);
+    }
   }
 }
 
@@ -129,8 +141,10 @@
   padding-inline-start: var(--space-3xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
   color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
 
   li {
     padding-inline-start: var(--space-md);
@@ -138,20 +152,34 @@
 }
 
 .steps li::marker {
-  color: var(--color-primary-600);
-  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-paragraph);
 }
 
+// Summary card.
 .service-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-neutral);
   border-radius: var(--radius-lg);
-  padding: var(--space-3xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3xl);
+  padding: var(--space-5xl);
+
+  // Each block is separated by a full-width rule with equal air above and below it.
+  > * + * {
+    margin-block-start: var(--space-3xl);
+    padding-block-start: var(--space-3xl);
+    border-block-start: 1px solid var(--color-border-neutral);
+  }
 }
 
+.fact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+// Icon first so it lands on the reading edge: right in Arabic, left in English.
 .fact {
   display: flex;
   align-items: flex-start;
@@ -164,54 +192,304 @@
 
   svg {
     display: block;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 }
 
-.fact__text {
+.fact__body {
+  flex: 1;
   min-width: 0;
 }
 
 .fact__label {
-  margin: 0 0 var(--space-xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-display);
+  margin: 0;
   font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
 }
 
 .fact__value {
-  margin: 0;
+  margin: var(--space-xs) 0 0;
   color: var(--color-text-paragraph);
-  font-size: var(--text-sm-size);
-  line-height: var(--text-sm-line);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
 }
 
-.service-card__guide {
-  display: block;
-  text-align: center;
-  border: 1px solid var(--color-border-neutral);
+.fact__value--link {
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-primary-600);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.fact__link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.guide__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  height: 40px;
+  margin-block-start: var(--space-md);
   border-radius: var(--radius-sm);
-  padding: var(--space-lg) var(--space-xl);
-  text-decoration: none;
+  background: var(--color-bg-neutral-100);
   color: var(--color-text-default);
+  text-decoration: none;
   font-size: var(--text-sm-size);
   font-weight: var(--font-weight-medium);
 
   &:hover {
-    border-color: var(--color-border-primary);
+    background: var(--color-bg-neutral-200);
+  }
+}
+
+.guide__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+// Related services.
+.related {
+  background: var(--color-bg-neutral-50);
+  padding-block: var(--space-5xl);
+}
+
+.related__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  margin-block-end: var(--space-4xl);
+}
+
+.related__title {
+  margin: 0;
+  font-size: var(--display-xs-size);
+  line-height: var(--display-xs-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-default);
+}
+
+.related__all {
+  color: var(--color-text-default);
+  text-decoration: none;
+  font-size: var(--text-md-size);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.related__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  // Fixed tracks rather than auto-fit: one related service should sit in a card the size of three,
+  // not stretch across the section.
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--space-3xl);
+}
+
+.related-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  height: 100%;
+  padding: var(--space-3xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral-secondary);
+  border-radius: var(--radius-lg);
+}
+
+// Always rendered, empty when a service has no icon, so a card without one keeps its neighbours'
+// geometry.
+.related-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-success-25);
+  color: var(--color-primary-600);
+
+  &--empty {
+    background: transparent;
+  }
+
+  ::ng-deep img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+}
+
+.related-card__title {
+  margin: 0;
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
+}
+
+.related-card__text {
+  margin: 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  // Three lines then an ellipsis, as the design's cards are cut.
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-tags--card {
+  margin: 0;
+}
+
+// Pushed to the foot of the card so the link sits on the same line in every card of a row.
+.related-card__link {
+  margin-block-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--color-text-default);
+  text-decoration: none;
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+
+  &:hover {
     color: var(--color-primary-600);
   }
 }
 
+// The arrow points the way the reader is going, so it flips with the document direction.
+.related-card__arrow {
+  width: 20px;
+  height: 20px;
+
+  :host-context([dir='ltr']) & {
+    transform: scaleX(-1);
+  }
+}
+
+// Comments and suggestions.
+.note-section {
+  padding-block: var(--space-5xl);
+}
+
+.note {
+  padding: var(--space-5xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-neutral-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.note__mark {
+  display: inline-flex;
+  color: var(--color-primary-600);
+  margin-block-end: var(--space-3xl);
+
+  svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.note__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
+}
+
+.note__text {
+  margin: 0 0 var(--space-3xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.note__cta {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-black);
+  color: var(--color-text-oncolor);
+  text-decoration: none;
+  font-size: var(--text-md-size);
+  font-weight: var(--font-weight-medium);
+
+  &:hover {
+    background: var(--color-bg-dark);
+  }
+}
+
 .service-updated {
-  padding-block-end: var(--space-4xl);
+  padding-block-end: var(--space-5xl);
 
   p {
     margin: 0;
-    padding-block-start: var(--space-xl);
-    border-block-start: 1px solid var(--color-border-neutral);
     color: var(--color-text-paragraph);
     font-size: var(--text-sm-size);
+  }
+}
+
+// Below the design's breakpoint the card can no longer sit beside the text, so it stacks under it
+// and the band simply frames the head.
+@media (max-width: 1024px) {
+  .service-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  // Stacked under the text, the card keeps the design's width instead of stretching the full row.
+  .service-layout__card {
+    max-width: 416px;
+  }
+
+  .related__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .service-card {
+    padding: var(--space-3xl);
+  }
+
+  .note {
+    padding: var(--space-3xl);
+  }
+
+  .related__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .service-head__title {
+    font-size: var(--display-xs-size);
+    line-height: var(--display-xs-line);
   }
 }

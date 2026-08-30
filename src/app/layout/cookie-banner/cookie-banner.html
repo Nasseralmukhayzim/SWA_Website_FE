@@ -1,0 +1,33 @@
+@if (visible()) {
+  <div class="cookies" role="region" [attr.aria-label]="t().region">
+    <div class="cookies__head">
+      <button type="button" class="cookies__close" [attr.aria-label]="t().close" (click)="dismiss()">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="m5 5 10 10M15 5 5 15" />
+        </svg>
+      </button>
+      <h2 class="cookies__title">{{ t().title }}</h2>
+
+      <span class="cookies__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-5-5 4 4 0 0 1-4-4Z" />
+          <circle cx="9" cy="13" r="1" />
+          <circle cx="13.5" cy="16" r="1" />
+          <circle cx="8" cy="9" r="1" />
+        </svg>
+      </span>
+    </div>
+
+    <p class="cookies__body">{{ t().body }}</p>
+
+    <p class="cookies__policy">
+      <a routerLink="/pages/privacy-policy">{{ t().policy }}</a>
+    </p>
+
+    <div class="cookies__actions">
+      <button type="button" class="cookies__btn cookies__btn--accept" (click)="accept()">{{ t().accept }}</button>
+      <button type="button" class="cookies__btn cookies__btn--reject" (click)="reject()">{{ t().reject }}</button>
+      <button type="button" class="cookies__btn cookies__btn--manage" (click)="manage()">{{ t().manage }}</button>
+    </div>
+  </div>
+}

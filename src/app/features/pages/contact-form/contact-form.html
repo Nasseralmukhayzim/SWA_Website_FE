@@ -1,90 +1,75 @@
-<section class="section container">
+<section class="contact-form-host">
+  <!-- Two-tab content switcher; the active tab is the solid green one in the design. -->
+  <div class="form-tabs" role="tablist" [attr.aria-label]="t().tabsLabel">
+    @for (tab of tabs(); track tab.key) {
+      <button
+        type="button"
+        role="tab"
+        class="form-tabs__tab"
+        [class.form-tabs__tab--active]="tab.key === active()"
+        [attr.aria-selected]="tab.key === active()"
+        (click)="select(tab.key)"
+      >{{ tab.label }}</button>
+    }
+  </div>
+
   <!--
     Static form: no action, no submit handler. The button is inert on purpose so the page cannot
     imply a request was sent while there is no endpoint behind it.
   -->
   <form class="contact-form" novalidate>
-    <div class="contact-form__row">
-      <div class="field">
-        <label class="field__label" for="cf-first">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().firstName }}
-        </label>
-        <input class="field__input" id="cf-first" name="firstName" type="text" [placeholder]="t().firstNamePlaceholder" />
-      </div>
+    @for (row of rows(); track $index) {
+      <div class="contact-form__row">
+        @for (field of row; track field.id) {
+          <div class="field" [class.field--wide]="row.length === 1">
+            <label class="field__label" [attr.for]="'cf-' + field.id">
+              <span>{{ field.label }}</span>
+              <span class="field__required" [attr.aria-label]="t().required">*</span>
+            </label>
 
-      <div class="field">
-        <label class="field__label" for="cf-last">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().lastName }}
-        </label>
-        <input class="field__input" id="cf-last" name="lastName" type="text" [placeholder]="t().lastNamePlaceholder" />
+            @switch (field.kind) {
+              @case ('select') {
+                <div class="field__select-wrap">
+                  <select class="field__input field__select" [id]="'cf-' + field.id" [name]="field.id">
+                    <option value="" selected>{{ field.placeholder }}</option>
+                  </select>
+                  <svg class="field__chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 7.5 10 12.5 15 7.5" />
+                  </svg>
+                </div>
+              }
+              @case ('textarea') {
+                <textarea class="field__input field__textarea" [id]="'cf-' + field.id" [name]="field.id" rows="4" [placeholder]="field.placeholder"></textarea>
+              }
+              @case ('tel') {
+                <div class="field__group">
+                  <span class="field__prefix" dir="ltr">
+                    +966
+                    <svg class="field__prefix-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 7.5 10 12.5 15 7.5" />
+                    </svg>
+                  </span>
+                  <input class="field__input field__input--grouped" [id]="'cf-' + field.id" [name]="field.id" type="tel" dir="ltr" [placeholder]="field.placeholder" />
+                </div>
+              }
+              @default {
+                <input class="field__input" [id]="'cf-' + field.id" [name]="field.id" [type]="field.kind" [placeholder]="field.placeholder" />
+              }
+            }
+          </div>
+        }
       </div>
+    }
 
-      <div class="field">
-        <label class="field__label" for="cf-nid">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().nationalId }}
-        </label>
-        <input class="field__input" id="cf-nid" name="nationalId" type="text" inputmode="numeric" [placeholder]="t().nationalIdPlaceholder" />
-      </div>
+    <div class="upload">
+      <span class="upload__label">{{ t().attach }}</span>
+      <p class="upload__hint">{{ t().attachHint }}</p>
+      <label class="upload__browse" for="cf-attachment">{{ t().browse }}</label>
+      <input class="upload__input" id="cf-attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png" />
     </div>
 
-    <div class="contact-form__row">
-      <div class="field">
-        <label class="field__label" for="cf-email">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().email }}
-        </label>
-        <input class="field__input" id="cf-email" name="email" type="email" dir="ltr" [placeholder]="t().emailPlaceholder" />
-      </div>
-
-      <div class="field">
-        <label class="field__label" for="cf-mobile">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().mobile }}
-        </label>
-        <div class="field__group">
-          <span class="field__prefix" dir="ltr">
-            +966
-            <svg class="field__prefix-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 7.5 10 12.5 15 7.5" />
-            </svg>
-          </span>
-          <input class="field__input field__input--grouped" id="cf-mobile" name="mobile" type="tel" dir="ltr" [placeholder]="t().mobilePlaceholder" />
-        </div>
-      </div>
+    <div class="contact-form__actions">
+      <button class="contact-form__submit" type="button">{{ t().submit }}</button>
     </div>
-
-    <div class="contact-form__row">
-      <div class="field">
-        <label class="field__label" for="cf-type">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().requestType }}
-        </label>
-        <select class="field__input field__select" id="cf-type" name="requestType">
-          <option value="" selected>{{ t().requestTypePlaceholder }}</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label class="field__label" for="cf-subject">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().subject }}
-        </label>
-        <input class="field__input" id="cf-subject" name="subject" type="text" [placeholder]="t().subjectPlaceholder" />
-      </div>
-    </div>
-
-    <div class="contact-form__row">
-      <div class="field">
-        <label class="field__label" for="cf-details">
-          <span class="field__required" [attr.aria-label]="t().required">*</span> {{ t().details }}
-        </label>
-        <textarea class="field__input field__textarea" id="cf-details" name="details" rows="4" [placeholder]="t().detailsPlaceholder"></textarea>
-      </div>
-
-      <div class="field">
-        <span class="field__label field__label--block">{{ t().attachments }}</span>
-        <p class="field__hint">{{ t().attachmentsHint }}</p>
-        <label class="field__browse" for="cf-file">{{ t().browse }}</label>
-        <input class="field__file" id="cf-file" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-      </div>
-    </div>
-
-    <button class="contact-form__submit" type="button">{{ t().submit }}</button>
   </form>
 </section>

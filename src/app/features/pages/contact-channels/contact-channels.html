@@ -1,0 +1,69 @@
+<aside class="channels">
+  <h2 class="channels__title">{{ section().heading }}</h2>
+  @if (section().intro) {
+    <p class="channels__intro">{{ section().intro }}</p>
+  }
+
+  <ul class="channels__list">
+    @for (channel of channels(); track $index) {
+      <li class="channel">
+        <div class="channel__body">
+          <p class="channel__label">{{ channel.title }}</p>
+
+          @if (channel.value) {
+            <p class="channel__value">
+              @if (channel.href) {
+                <a [href]="channel.href">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="5.5" y="5.5" width="8" height="8" rx="1.6" />
+                    <path d="M10.5 5.5v-1a1.6 1.6 0 0 0-1.6-1.6H4a1.6 1.6 0 0 0-1.6 1.6v4.9c0 .88.72 1.6 1.6 1.6h1" />
+                  </svg>
+                  <span dir="auto">{{ channel.value }}</span>
+                </a>
+              } @else {
+                <span class="channel__code">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 3h4v4M13 3 7.5 8.5M11 9.5v2.9c0 .88-.72 1.6-1.6 1.6H4a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6h2.9" />
+                  </svg>
+                  <span dir="auto">{{ channel.value }}</span>
+                </span>
+              }
+            </p>
+          }
+
+          @if (channel.detail) {
+            <p class="channel__detail">{{ channel.detail }}</p>
+          }
+
+          <!-- The national address row carries the head-office map beneath its text. -->
+          @if (channel.imageId) {
+            <figure class="channel__map">
+              <app-media-image [mediaId]="channel.imageId" variant="image" [alt]="mapAlt()" />
+            </figure>
+          }
+        </div>
+
+        @if (channel.iconId) {
+          <span class="channel__icon">
+            <app-media-image [mediaId]="channel.iconId" variant="icon" [alt]="''" />
+          </span>
+        }
+      </li>
+    }
+  </ul>
+
+  @if (socialItem(); as social) {
+    <div class="channels__social">
+      <h3 class="channels__social-title">{{ social.title }}</h3>
+      <ul class="channels__social-list">
+        @for (item of socialChannels; track item.name) {
+          <li>
+            <span class="social-button" [attr.aria-label]="item.name">
+              <img [src]="item.icon" alt="" width="16" height="16" />
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</aside>

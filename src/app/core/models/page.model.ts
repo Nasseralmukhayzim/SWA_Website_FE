@@ -38,4 +38,5 @@ export interface PageDetail {
   parentId: string | null;
   showInNavigation: boolean;
   sections: PageSection[];
+  updatedAtUtc: string | null;
 }

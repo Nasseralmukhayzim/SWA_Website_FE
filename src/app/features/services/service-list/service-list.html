@@ -108,11 +108,15 @@
     <ul class="card-grid">
       @for (item of visible(); track item.id) {
         <li class="card service-card">
-          @if (item.iconId) {
-            <span class="service-card__icon">
+          <!--
+            The medallion is always rendered, empty when a service has no icon, so a card without
+            one keeps the same geometry as its neighbours.
+          -->
+          <span class="service-card__icon" [class.service-card__icon--empty]="!item.iconId">
+            @if (item.iconId) {
               <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
-            </span>
-          }
+            }
+          </span>
           <a class="card-title" [routerLink]="['/services', item.slug]">{{ item.name }}</a>
           @if (item.description) {
             <p>{{ item.description }}</p>

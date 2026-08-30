@@ -43,5 +43,9 @@ export interface ServiceDetail {
   channelSlugs: string[];
   audienceNames: string[];
   channelNames: string[];
+  categorySlug: string | null;
+  categoryName: string | null;
+  activityTypeSlug: string | null;
+  activityTypeName: string | null;
   updatedAtUtc: string | null;
 }

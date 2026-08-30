@@ -29,7 +29,6 @@
               @if (channel.url) {
                 <a
                   class="site-footer__icon-button"
-                  [class.site-footer__icon-button--bare]="channel.bare"
                   [href]="channel.url"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -40,7 +39,6 @@
               } @else {
                 <span
                   class="site-footer__icon-button"
-                  [class.site-footer__icon-button--bare]="channel.bare"
                   role="img"
                   [attr.aria-label]="channel.name"
                 >

@@ -18,6 +18,8 @@
   --color-link-neutral: #384250;
   // Tag/tag-text-info — the count badges on the activity tabs
   --color-text-info: #1849a9;
+  // Tag/tag-text-success — the service-category tag on a service page
+  --color-text-success: #085d3a;
 
   // Backgrounds
   --color-bg-body: #f9fafb;
@@ -26,6 +28,8 @@
   --color-bg-menu: #ffffff;
   --color-bg-neutral-100: #f3f4f6;
   --color-bg-neutral-200: #e5e7eb;
+  // The pale mint band behind the Contact Us hero
+  --color-bg-primary-25: #f6fef9;
   --color-bg-info-25: #f5faff;
   // Tag/tag-background-info-light — activity tab count badges
   --color-bg-info-50: #eff8ff;
@@ -34,11 +38,18 @@
   --color-bg-neutral-50: #f9fafb;
   // Chip/chip-background-neutral-selected
   --color-bg-neutral-700: #384250;
+  // Tag/tag-background-success-light — the service-category tag on a service page
+  --color-bg-success-50: #ecfdf3;
+  // The pale green medallion behind card and figure pictograms
+  --color-bg-success-25: #f3fcf6;
 
   // Borders
   --color-border-neutral: #d2d6db;
   --color-border-neutral-secondary: #e5e7eb;
   --color-border-primary: #1b8354;
+  // Tag borders, one per tone (Tag/tag-border-*)
+  --color-border-success-200: #abefc6;
+  --color-border-info-200: #b2ddff;
 
   // Icon
   --color-icon-default: #161616;
@@ -87,6 +98,8 @@
   --space-3xl: 1.5rem; // 24
   --space-4xl: 2rem; // 32
   --space-5xl: 2.5rem; // 40
+  --space-6xl: 3rem; // 48
+  --space-7xl: 4rem; // 64
   --space-8xl: 5rem; // 80
 
   // Radius

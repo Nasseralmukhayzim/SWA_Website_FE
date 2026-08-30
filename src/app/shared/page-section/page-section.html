@@ -1,6 +1,11 @@
-<section class="page-section" [class.page-section--tinted]="tinted()">
-  <div class="container">
-    @if (isSplit()) {
+<section
+  class="page-section"
+  [class.page-section--tinted]="tinted()"
+  [class.page-section--plain]="plainHeading()"
+  [class.page-section--flush]="flush()"
+>
+  <div [class.container]="!flush()">
+    @if (layout() === 'split') {
       <!--
         Split section: the heading belongs inside the text column here, not above the whole block,
         so it lines up with the top of the image the way the design has it.
@@ -24,80 +29,120 @@
         </div>
       }
     } @else {
-      @if (section().heading) {
-        <h2>{{ section().heading }}</h2>
-      }
-      @if (section().intro) {
-        <p class="section-intro">{{ section().intro }}</p>
-      }
-      <!--
-        Body and item descriptions are authored in the CMS rich text editor, so they arrive as HTML.
-        Binding through innerHTML lets Angular's sanitizer strip anything unsafe; interpolating them
-        would print the markup as literal text.
-      -->
-      @if (section().body) {
-        <div class="body rich-text" [innerHTML]="section().body"></div>
-      }
-
-      @switch (section().kind) {
-        @case ('StatGroup') {
-          <dl class="stat-grid">
-            @for (item of section().items; track $index) {
-              <div class="stat">
-                @if (item.iconId) {
-                  <div class="stat-icon">
-                    <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
-                  </div>
-                }
-                <dt class="stat-value">{{ item.title }}</dt>
-                <dd class="stat-label rich-text" [innerHTML]="item.description"></dd>
-              </div>
-            }
-          </dl>
+      <!-- The panel layout draws the design's tinted card around the whole section. -->
+      <div
+        class="section-inner"
+        [class.section-inner--panel]="layout() === 'panel'"
+        [class.section-inner--sheet]="panelled()"
+      >
+        @if (section().heading) {
+          <h2>{{ section().heading }}</h2>
         }
-        @case ('Timeline') {
-          <ol class="timeline">
-            @for (item of section().items; track $index) {
-              <li>
-                <strong>{{ item.title }}</strong>
-                <div class="timeline-label rich-text" [innerHTML]="item.description"></div>
-              </li>
-            }
-          </ol>
+        @if (section().intro) {
+          <p class="section-intro">{{ section().intro }}</p>
         }
-        @default {
-          <ul class="card-grid" [class.card-grid--feature]="variant() === 'feature'">
-            @for (item of section().items; track $index) {
-              <li class="card" [class.card--feature]="variant() === 'feature'">
-                @if (item.imageId) {
-                  <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
-                }
-                @if (variant() === 'feature') {
-                  @if (item.iconId) {
-                    <span class="card-logo">
-                      <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
-                    </span>
-                  }
-                  <span class="card-title">{{ item.title }}</span>
-                } @else {
-                  <div class="card-heading">
-                    @if (item.iconId) {
-                      <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
-                    }
-                    <span class="card-title">{{ item.title }}</span>
-                  </div>
-                }
-                @if (item.description) {
-                  <div class="card-body rich-text" [innerHTML]="item.description"></div>
-                }
-                @if (item.linkUrl) {
-                  <a [href]="item.linkUrl">Learn more</a>
-                }
-              </li>
+        <!--
+          Body and item descriptions are authored in the CMS rich text editor, so they arrive as
+          HTML. Binding through innerHTML lets Angular's sanitizer strip anything unsafe;
+          interpolating them would print the markup as literal text.
+        -->
+        @if (bodyList(); as items) {
+          <ul class="prose-list">
+            @for (item of items; track $index) {
+              <li>{{ item }}</li>
             }
           </ul>
+        } @else if (section().body) {
+          <div class="body rich-text" [innerHTML]="section().body"></div>
         }
-      }
+
+        @switch (section().kind) {
+          @case ('StatGroup') {
+            <dl class="stat-grid">
+              @for (item of section().items; track $index) {
+                <div class="stat">
+                  @if (item.iconId) {
+                    <div class="stat-icon">
+                      <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                    </div>
+                  }
+                  <dt class="stat-value">{{ item.title }}</dt>
+                  <dd class="stat-label rich-text" [innerHTML]="item.description"></dd>
+                </div>
+              }
+            </dl>
+          }
+          @case ('Timeline') {
+            <ol class="timeline">
+              @for (item of section().items; track $index) {
+                <li class="timeline__entry">
+                  <strong class="timeline__marker">{{ item.title }}</strong>
+                  <div class="timeline__label rich-text" [innerHTML]="item.description"></div>
+                </li>
+              }
+            </ol>
+          }
+          @default {
+            @if (layout() === 'logos') {
+              <!--
+                A mark and a name only. Entities whose logo has not been uploaded yet still get a
+                tile, so the row stays even rather than leaving a hole where the picture would be.
+              -->
+              <ul class="logo-strip">
+                @for (item of section().items; track $index) {
+                  <li class="logo-strip__item">
+                    <span class="logo-strip__mark">
+                      @if (item.imageId) {
+                        <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
+                      }
+                    </span>
+                    <span class="logo-strip__name">{{ item.title }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <ul
+                class="card-grid"
+                [class.card-grid--feature]="variant() === 'feature'"
+                [style.--card-columns]="cardColumns()"
+              >
+                @for (item of section().items; track $index) {
+                  <li
+                    class="card"
+                    [class.card--feature]="variant() === 'feature'"
+                    [class.card--wide]="$last && lastCardSpans()"
+                  >
+                    @if (item.imageId) {
+                      <app-media-image [mediaId]="item.imageId" variant="image" [alt]="item.title" />
+                    }
+                    @if (variant() === 'feature') {
+                      @if (item.iconId) {
+                        <span class="card-logo">
+                          <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                        </span>
+                      }
+                      <span class="card-title">{{ item.title }}</span>
+                    } @else {
+                      <div class="card-heading">
+                        @if (item.iconId) {
+                          <app-media-image [mediaId]="item.iconId" variant="icon" [alt]="''" />
+                        }
+                        <span class="card-title">{{ item.title }}</span>
+                      </div>
+                    }
+                    @if (item.description) {
+                      <div class="card-body rich-text" [innerHTML]="item.description"></div>
+                    }
+                    @if (item.linkUrl) {
+                      <a [href]="item.linkUrl">Learn more</a>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          }
+        }
+      </div>
     }
   </div>
 </section>
