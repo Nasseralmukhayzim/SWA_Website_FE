@@ -27,7 +27,7 @@ export class DocumentList {
       const section = this.sectionFilter();
       this.loading.set(true);
       this.error.set(false);
-      this.api.getDocuments({ lang, section: section ?? undefined, pageSize: 100 }).subscribe({
+      this.api.getDocuments(lang, { section: section ?? undefined, pageSize: 100 }).subscribe({
         next: (result) => {
           this.items.set(result.items);
           this.loading.set(false);

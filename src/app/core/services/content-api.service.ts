@@ -17,54 +17,65 @@ export class ContentApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/api/public`;
 
-  getPages(params: { lang?: string; parentId?: string; showInNavigation?: boolean; page?: number; pageSize?: number } = {}): Observable<PagedResult<PageListItem>> {
-    return this.http.get<PagedResult<PageListItem>>(`${this.baseUrl}/pages`, { params: toHttpParams(params) });
+  // The backend's PublicController requires the language as a route segment
+  // (api/public/{ar|en}/...), not a query string — there's no default, so every call needs a
+  // real 'ar' | 'en' value.
+  private urlFor(lang: string, path: string): string {
+    return `${environment.apiBaseUrl}/api/public/${lang}/${path}`;
   }
 
-  getPage(slug: string, lang?: string): Observable<PageDetail> {
-    return this.http.get<PageDetail>(`${this.baseUrl}/pages/${slug}`, { params: toHttpParams({ lang }) });
+  getPages(lang: string, params: { parentId?: string; showInNavigation?: boolean; page?: number; pageSize?: number } = {}): Observable<PagedResult<PageListItem>> {
+    return this.http.get<PagedResult<PageListItem>>(this.urlFor(lang, 'pages'), { params: toHttpParams(params) });
   }
 
-  getNews(params: { lang?: string; isFeatured?: boolean; page?: number; pageSize?: number } = {}): Observable<PagedResult<NewsListItem>> {
-    return this.http.get<PagedResult<NewsListItem>>(`${this.baseUrl}/news`, { params: toHttpParams(params) });
+  getPage(slug: string, lang: string): Observable<PageDetail> {
+    return this.http.get<PageDetail>(this.urlFor(lang, `pages/${slug}`));
   }
 
-  getNewsItem(slug: string, lang?: string): Observable<NewsDetail> {
-    return this.http.get<NewsDetail>(`${this.baseUrl}/news/${slug}`, { params: toHttpParams({ lang }) });
+  getNews(lang: string, params: { isFeatured?: boolean; page?: number; pageSize?: number } = {}): Observable<PagedResult<NewsListItem>> {
+    return this.http.get<PagedResult<NewsListItem>>(this.urlFor(lang, 'news'), { params: toHttpParams(params) });
   }
 
-  getEvents(params: { lang?: string; upcoming?: boolean; eventTypeId?: string; page?: number; pageSize?: number } = {}): Observable<PagedResult<EventListItem>> {
-    return this.http.get<PagedResult<EventListItem>>(`${this.baseUrl}/events`, { params: toHttpParams(params) });
+  getNewsItem(slug: string, lang: string): Observable<NewsDetail> {
+    return this.http.get<NewsDetail>(this.urlFor(lang, `news/${slug}`));
   }
 
-  getEvent(slug: string, lang?: string): Observable<EventDetail> {
-    return this.http.get<EventDetail>(`${this.baseUrl}/events/${slug}`, { params: toHttpParams({ lang }) });
+  getEvents(lang: string, params: { upcoming?: boolean; eventTypeId?: string; page?: number; pageSize?: number } = {}): Observable<PagedResult<EventListItem>> {
+    return this.http.get<PagedResult<EventListItem>>(this.urlFor(lang, 'events'), { params: toHttpParams(params) });
   }
 
-  getFaqs(params: { lang?: string; categoryId?: string; page?: number; pageSize?: number } = {}): Observable<PagedResult<FaqListItem>> {
-    return this.http.get<PagedResult<FaqListItem>>(`${this.baseUrl}/faqs`, { params: toHttpParams(params) });
+  getEvent(slug: string, lang: string): Observable<EventDetail> {
+    return this.http.get<EventDetail>(this.urlFor(lang, `events/${slug}`));
+  }
+
+  getFaqs(lang: string, params: { categoryId?: string; page?: number; pageSize?: number } = {}): Observable<PagedResult<FaqListItem>> {
+    return this.http.get<PagedResult<FaqListItem>>(this.urlFor(lang, 'faqs'), { params: toHttpParams(params) });
   }
 
   getServices(
-    params: { lang?: string; deliveryType?: number; audienceId?: string; channelId?: string; isFeatured?: boolean; page?: number; pageSize?: number } = {},
+    lang: string,
+    params: { deliveryType?: number; audienceId?: string; channelId?: string; isFeatured?: boolean; page?: number; pageSize?: number } = {},
   ): Observable<PagedResult<ServiceListItem>> {
-    return this.http.get<PagedResult<ServiceListItem>>(`${this.baseUrl}/services`, { params: toHttpParams(params) });
+    return this.http.get<PagedResult<ServiceListItem>>(this.urlFor(lang, 'services'), { params: toHttpParams(params) });
   }
 
-  getService(slug: string, lang?: string): Observable<ServiceDetail> {
-    return this.http.get<ServiceDetail>(`${this.baseUrl}/services/${slug}`, { params: toHttpParams({ lang }) });
+  getService(slug: string, lang: string): Observable<ServiceDetail> {
+    return this.http.get<ServiceDetail>(this.urlFor(lang, `services/${slug}`));
   }
 
-  getDocuments(params: { lang?: string; section?: number; categoryId?: string; year?: number; page?: number; pageSize?: number } = {}): Observable<PagedResult<DocumentListItem>> {
-    return this.http.get<PagedResult<DocumentListItem>>(`${this.baseUrl}/documents`, { params: toHttpParams(params) });
+  getDocuments(lang: string, params: { section?: number; categoryId?: string; year?: number; page?: number; pageSize?: number } = {}): Observable<PagedResult<DocumentListItem>> {
+    return this.http.get<PagedResult<DocumentListItem>>(this.urlFor(lang, 'documents'), { params: toHttpParams(params) });
   }
 
-  getDocument(slug: string, lang?: string): Observable<DocumentDetail> {
-    return this.http.get<DocumentDetail>(`${this.baseUrl}/documents/${slug}`, { params: toHttpParams({ lang }) });
+  getDocument(slug: string, lang: string): Observable<DocumentDetail> {
+    return this.http.get<DocumentDetail>(this.urlFor(lang, `documents/${slug}`));
   }
 
-  getLookups(key: LookupKey, lang?: string): Observable<Lookup[]> {
-    return this.http.get<Lookup[]>(`${this.baseUrl}/lookups/${key}`, { params: toHttpParams({ lang }) });
+  // NOTE: 'service-categories' and 'service-activity-types' don't have public read endpoints on
+  // the backend yet (only the admin CRUD side exists) — calls with those keys will still 404
+  // until that's added server-side.
+  getLookups(key: LookupKey, lang: string): Observable<Lookup[]> {
+    return this.http.get<Lookup[]>(this.urlFor(lang, key));
   }
 
   private readonly mediaCache = new Map<string, Observable<MediaAsset>>();

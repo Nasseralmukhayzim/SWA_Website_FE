@@ -37,7 +37,7 @@ export class FaqList {
       const lang = this.language.language();
       this.loading.set(true);
       this.error.set(false);
-      this.api.getFaqs({ lang, pageSize: 200 }).subscribe({
+      this.api.getFaqs(lang, { pageSize: 200 }).subscribe({
         next: (result) => {
           this.faqs.set(result.items);
           this.loading.set(false);

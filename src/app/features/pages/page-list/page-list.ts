@@ -19,7 +19,7 @@ export class PageList {
   protected readonly error = signal(false);
 
   constructor() {
-    this.api.getPages({ lang: this.language.language(), pageSize: 100 }).subscribe({
+    this.api.getPages(this.language.language(), { pageSize: 100 }).subscribe({
       next: (result) => {
         this.pages.set(result.items);
         this.loading.set(false);

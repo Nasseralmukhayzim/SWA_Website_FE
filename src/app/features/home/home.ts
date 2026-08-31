@@ -87,7 +87,7 @@ export class Home {
       error: () => this.homePage.set(null),
     });
 
-    this.api.getNews({ lang, page: 1, pageSize: NEWS_COUNT }).subscribe({
+    this.api.getNews(lang, { page: 1, pageSize: NEWS_COUNT }).subscribe({
       next: (result) => {
         this.latestNews.set(result.items);
         this.loading.set(false);

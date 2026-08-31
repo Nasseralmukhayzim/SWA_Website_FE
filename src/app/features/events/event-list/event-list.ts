@@ -33,7 +33,7 @@ export class EventList {
       const upcoming = this.upcomingFilter();
       this.loading.set(true);
       this.error.set(false);
-      this.api.getEvents({ lang, upcoming: upcoming ?? undefined, pageSize: 30 }).subscribe({
+      this.api.getEvents(lang, { upcoming: upcoming ?? undefined, pageSize: 30 }).subscribe({
         next: (result) => {
           this.items.set(result.items);
           this.loading.set(false);

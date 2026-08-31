@@ -101,7 +101,7 @@ export class NewsList {
       const lang = this.language.language();
       this.loading.set(true);
       this.error.set(false);
-      this.api.getNews({ lang, pageSize: 100 }).subscribe({
+      this.api.getNews(lang, { pageSize: 100 }).subscribe({
         next: (result) => {
           this.all.set(result.items);
           this.page.set(1);

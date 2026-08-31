@@ -168,7 +168,7 @@ export class ServiceList {
       this.loading.set(true);
       this.error.set(false);
       forkJoin({
-        services: this.api.getServices({ lang, pageSize: 100 }),
+        services: this.api.getServices(lang, { pageSize: 100 }),
         audiences: this.api.getLookups('service-audiences', lang),
         categories: this.api.getLookups('service-categories', lang),
         activityTypes: this.api.getLookups('service-activity-types', lang),

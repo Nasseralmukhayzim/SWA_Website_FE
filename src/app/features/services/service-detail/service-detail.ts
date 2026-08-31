@@ -263,7 +263,7 @@ export class ServiceDetail {
     if (!service.categorySlug) {
       return;
     }
-    this.api.getServices({ lang, pageSize: 100 }).subscribe({
+    this.api.getServices(lang, { pageSize: 100 }).subscribe({
       next: (result) => {
         this.related.set(
           result.items
