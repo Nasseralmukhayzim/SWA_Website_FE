@@ -85,6 +85,11 @@
       }
 
       <div class="page-layout__main">
+        <!--
+          Regulations opens with its own section heading and intro, which say the same thing as the
+          page body — so the generic overview block would print the text a second time.
+        -->
+        @if (!showRegulations()) {
         <section class="page-block" [id]="overviewId" [attr.data-section-id]="overviewId">
           <h2 class="page-block__heading">{{ t().overview }}</h2>
           <!--
@@ -97,6 +102,7 @@
             <p class="page-block__body">{{ p.summary }}</p>
           }
         </section>
+        }
 
         <!--
           The opening prose sits beside the hero picture. Text first in the DOM so the picture takes
@@ -123,6 +129,10 @@
               </figure>
             }
           </div>
+        }
+
+        @if (showRegulations()) {
+          <app-regulations-table />
         }
 
         @for (entry of restSections(); track entry.id) {

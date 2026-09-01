@@ -71,9 +71,6 @@ export class ContentApiService {
     return this.http.get<DocumentDetail>(this.urlFor(lang, `documents/${slug}`));
   }
 
-  // NOTE: 'service-categories' and 'service-activity-types' don't have public read endpoints on
-  // the backend yet (only the admin CRUD side exists) — calls with those keys will still 404
-  // until that's added server-side.
   getLookups(key: LookupKey, lang: string): Observable<Lookup[]> {
     return this.http.get<Lookup[]>(this.urlFor(lang, key));
   }

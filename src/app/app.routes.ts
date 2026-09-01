@@ -42,6 +42,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/services/service-detail/service-detail').then((m) => m.ServiceDetail),
   },
   {
+    path: 'search',
+    loadComponent: () => import('./features/search/search-page/search-page').then((m) => m.SearchPage),
+  },
+  {
     path: 'documents',
     loadComponent: () => import('./features/documents/document-list/document-list').then((m) => m.DocumentList),
   },

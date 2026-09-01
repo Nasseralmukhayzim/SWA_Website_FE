@@ -11,10 +11,18 @@ import { MediaImage } from '../../../shared/media-image/media-image';
 import { PageSectionComponent } from '../../../shared/page-section/page-section';
 import { ContactForm } from '../contact-form/contact-form';
 import { ContactChannels } from '../contact-channels/contact-channels';
+import { RegulationsTable } from '../regulations-table/regulations-table';
 import { toProseList } from '../../../core/utils/prose-list';
 
 /** Pages whose design carries a form the CMS cannot express as section content. */
 const CONTACT_FORM_SLUG = 'contact-us';
+
+/**
+ * The regulations page lists the published documents as a filterable table. That listing is not
+ * section content an editor writes — it is the Documents collection — so the page renders the table
+ * after its prose rather than expecting a section to hold it.
+ */
+const REGULATIONS_SLUG = 'regulations-and-laws';
 
 /** The id the opening block is given, so the contents list can link to it like any other section. */
 const OVERVIEW_ID = 'overview';
@@ -51,7 +59,7 @@ function sectionId(index: number): string {
 
 @Component({
   selector: 'app-page-detail',
-  imports: [RouterLink, MediaImage, PageSectionComponent, ContactForm, ContactChannels, DatePipe],
+  imports: [RouterLink, MediaImage, PageSectionComponent, ContactForm, ContactChannels, RegulationsTable, DatePipe],
   templateUrl: './page-detail.html',
   styleUrl: './page-detail.scss',
 })
@@ -77,6 +85,8 @@ export class PageDetail implements AfterViewInit, OnDestroy {
   protected readonly overviewId = OVERVIEW_ID;
 
   protected readonly showContactForm = computed(() => this.page()?.slug === CONTACT_FORM_SLUG);
+
+  protected readonly showRegulations = computed(() => this.page()?.slug === REGULATIONS_SLUG);
 
   /**
    * On Contact Us the first CardGrid is the channels card that sits beside the form; anything
@@ -130,7 +140,8 @@ export class PageDetail implements AfterViewInit, OnDestroy {
   /** Contents list: the opening block, then every section that carries a heading to link to. */
   protected readonly contents = computed(() => {
     const page = this.page();
-    if (!page || this.showContactForm()) {
+    // Regulations runs the table across the full width, with no contents list beside it.
+    if (!page || this.showContactForm() || this.showRegulations()) {
       return [];
     }
     const entries: { id: string; label: string }[] = [{ id: OVERVIEW_ID, label: this.t().overview }];

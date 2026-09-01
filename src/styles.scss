@@ -412,6 +412,45 @@ a {
   color: var(--color-text-info);
 }
 
+.service-tag--warning {
+  background: var(--color-bg-warning-50);
+  border-color: var(--color-border-warning-200);
+  color: var(--color-text-warning);
+}
+
+// Rich text arrives from the CMS editor as real markup, so the block elements it emits need to
+// inherit the surrounding typography rather than the browser defaults. `white-space` stays normal
+// here — the markup, not newlines, carries the structure now.
+//
+// Global rather than component-scoped on purpose: this content is injected with [innerHTML], so its
+// nodes never carry a component's scoping attribute and an encapsulated `.rich-text p` would not
+// reach them.
+.rich-text {
+  :first-child {
+    margin-block-start: 0;
+  }
+
+  :last-child {
+    margin-block-end: 0;
+  }
+
+  p {
+    margin-block: 0 var(--space-md);
+    color: inherit;
+    font-size: inherit;
+  }
+
+  ul,
+  ol {
+    margin-block: 0 var(--space-md);
+    padding-inline-start: var(--space-3xl);
+  }
+
+  a {
+    color: var(--color-primary-600);
+  }
+}
+
 // Small phones: every card grid collapses to one column. The minmax floors these grids use
 // (240–340px) exceed the content box below ~380px, which would otherwise push the page sideways.
 @media (max-width: 420px) {

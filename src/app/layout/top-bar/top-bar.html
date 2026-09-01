@@ -29,15 +29,37 @@
     </ul>
 
     <!--
-      Site-wide search has no page behind it yet, so this is a placeholder control rather than a
-      link to nowhere. Point it at a search route once one exists.
+      At rest this is the compact control the design shows; opening it reveals the field in place so
+      the bar keeps its height either way. Submitting hands off to the search page, which owns the
+      query in its URL.
     -->
-    <button type="button" class="top-bar__search" disabled>
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
-        <circle cx="7.2" cy="7.2" r="4.6" />
-        <path d="m10.8 10.8 2.8 2.8" />
-      </svg>
-      <span>{{ t().search }}</span>
-    </button>
+    @if (open()) {
+      <form class="top-bar__search-form" role="search" (submit)="submit($event)">
+        <label class="visually-hidden" for="top-bar-search">{{ t().search }}</label>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+          <circle cx="7.2" cy="7.2" r="4.6" />
+          <path d="m10.8 10.8 2.8 2.8" />
+        </svg>
+        <input
+          #searchInput
+          id="top-bar-search"
+          type="search"
+          autocomplete="off"
+          [placeholder]="t().search"
+          [value]="draft()"
+          (input)="draft.set($any($event.target).value)"
+          (keydown.escape)="close()"
+        />
+        <button type="submit">{{ t().go }}</button>
+      </form>
+    } @else {
+      <button type="button" class="top-bar__search" (click)="openSearch()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+          <circle cx="7.2" cy="7.2" r="4.6" />
+          <path d="m10.8 10.8 2.8 2.8" />
+        </svg>
+        <span>{{ t().search }}</span>
+      </button>
+    }
   </div>
 </div>

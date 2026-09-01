@@ -1,0 +1,257 @@
+:host {
+  display: block;
+  // The site body is grey; the results run on white like the other content pages.
+  background: var(--color-bg-white);
+}
+
+.search-hero {
+  background: var(--color-bg-info-25);
+  padding-block: var(--space-5xl);
+}
+
+.search-hero__crumb {
+  margin-block-end: var(--space-3xl);
+}
+
+.search-hero__title {
+  margin: 0 0 var(--space-3xl);
+  font-size: var(--display-md-size);
+  line-height: var(--display-md-line);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-default);
+}
+
+// Search field — the icon sits on the reading edge, the submit button on the far one.
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  max-width: 720px;
+  padding-inline: var(--space-xl);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+
+  &:focus-within {
+    border-color: var(--color-border-primary);
+  }
+}
+
+.search-field__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-text-placeholder);
+}
+
+.search-field__input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  border: 0;
+  background: none;
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-md-size);
+
+  &::placeholder {
+    color: var(--color-text-placeholder);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  // The browser's own clear button sits badly against the submit button.
+  &::-webkit-search-cancel-button {
+    appearance: none;
+  }
+}
+
+.search-field__submit {
+  flex-shrink: 0;
+  height: 36px;
+  padding-inline: var(--space-xl);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-600);
+  color: var(--color-text-oncolor);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-primary-800);
+  }
+}
+
+.search-body {
+  padding-block: var(--space-4xl) var(--space-8xl);
+}
+
+.search-filters {
+  list-style: none;
+  margin: 0 0 var(--space-4xl);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.search-filters__tab {
+  height: 36px;
+  padding-inline: var(--space-xl);
+  border: 1px solid var(--color-border-neutral-secondary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-white);
+  color: var(--color-text-paragraph);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-border-neutral);
+    color: var(--color-text-default);
+  }
+
+  &.is-active {
+    background: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+    color: var(--color-text-oncolor);
+  }
+}
+
+.search-summary {
+  margin: 0 0 var(--space-3xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+}
+
+.search-state {
+  margin: 0;
+  padding-block: var(--space-5xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+.search-state__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-lg-size);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-display);
+}
+
+.search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+}
+
+.search-result {
+  padding-block-end: var(--space-3xl);
+  border-block-end: 1px solid var(--color-border-neutral-secondary);
+
+  &:last-child {
+    border-block-end: 0;
+    padding-block-end: 0;
+  }
+}
+
+.search-result__type {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-primary-600);
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+}
+
+.search-result__title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+  font-weight: var(--font-weight-bold);
+
+  a {
+    color: var(--color-text-display);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-primary-600);
+      text-decoration: underline;
+    }
+  }
+}
+
+.search-result__snippet {
+  margin: 0;
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+
+  // The matched words, as the index marks them. ::ng-deep because the snippet arrives through
+  // innerHTML and so carries no scoping attribute.
+  ::ng-deep em {
+    background: var(--color-bg-success-25);
+    color: var(--color-text-display);
+    font-style: normal;
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+.search-result__tags {
+  margin-block-start: var(--space-lg);
+}
+
+.search-pager {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  margin-block-start: var(--space-5xl);
+}
+
+.search-pager__button {
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-white);
+  color: var(--color-text-default);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  cursor: pointer;
+
+  &:disabled {
+    color: var(--color-text-disabled);
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    border-color: var(--color-border-primary);
+    color: var(--color-primary-600);
+  }
+}
+
+.search-pager__status {
+  color: var(--color-text-paragraph);
+  font-size: var(--text-sm-size);
+}
+
+@media (max-width: 640px) {
+  .search-hero__title {
+    font-size: var(--display-sm-size);
+    line-height: var(--display-sm-line);
+  }
+
+  .search-field {
+    flex-wrap: wrap;
+    padding-block: var(--space-md);
+  }
+
+  .search-field__submit {
+    width: 100%;
+  }
+}

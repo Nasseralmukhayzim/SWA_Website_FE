@@ -32,7 +32,7 @@
       </figure>
     }
     @if (e.description) {
-      <div class="body">{{ e.description }}</div>
+      <div class="body rich-text" [innerHTML]="e.description"></div>
     }
     @if (e.registrationUrl) {
       <a class="cta" [href]="e.registrationUrl">Register</a>

@@ -28,7 +28,7 @@
       </figure>
     }
     @if (d.description) {
-      <div class="body">{{ d.description }}</div>
+      <div class="body rich-text" [innerHTML]="d.description"></div>
     }
 
     @if (file(); as f) {

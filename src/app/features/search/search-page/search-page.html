@@ -1,0 +1,107 @@
+<section class="search-hero">
+  <div class="container">
+    <nav class="search-hero__crumb" [attr.aria-label]="t().crumbLabel">
+      <ol class="crumbs">
+        <li><a routerLink="/">{{ t().home }}</a></li>
+        <li aria-current="page">{{ t().heading }}</li>
+      </ol>
+    </nav>
+    <h1 class="search-hero__title">{{ t().heading }}</h1>
+
+    <form class="search-field" (submit)="submit($event)" role="search">
+      <label class="visually-hidden" for="site-search">{{ t().heading }}</label>
+      <svg class="search-field__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <circle cx="9" cy="9" r="5.8" />
+        <path d="m13.5 13.5 3.5 3.5" />
+      </svg>
+      <input
+        id="site-search"
+        class="search-field__input"
+        type="search"
+        autocomplete="off"
+        [placeholder]="t().placeholder"
+        [value]="fieldValue()"
+        (input)="setDraft($any($event.target).value)"
+      />
+      <button class="search-field__submit" type="submit">{{ t().submit }}</button>
+    </form>
+  </div>
+</section>
+
+<div class="container search-body">
+  @if (term()) {
+    <!-- Filters stay visible while a search is running so the row does not jump as results land. -->
+    <ul class="search-filters" role="tablist">
+      @for (filter of filters(); track filter.label) {
+        <li>
+          <button
+            type="button"
+            role="tab"
+            class="search-filters__tab"
+            [class.is-active]="filter.value === contentType()"
+            [attr.aria-selected]="filter.value === contentType() ? 'true' : 'false'"
+            (click)="selectType(filter.value)"
+          >{{ filter.label }}</button>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (loading()) {
+    <p class="search-state">{{ t().loading }}</p>
+  } @else if (failed()) {
+    <p class="search-state" role="alert">{{ t().error }}</p>
+  } @else if (!term()) {
+    <p class="search-state">{{ t().prompt }}</p>
+  } @else if (results().length === 0) {
+    <div class="search-state">
+      <p class="search-state__title">{{ t().empty }}</p>
+      <p>{{ t().emptyHint }}</p>
+    </div>
+  } @else {
+    <p class="search-summary">
+      {{ t().resultsFor }} <strong>{{ term() }}</strong> — {{ t().count(total()) }}
+    </p>
+
+    <ul class="search-results">
+      @for (result of results(); track result.entityId) {
+        <li class="search-result">
+          <p class="search-result__type">{{ typeLabel(result.contentType) }}</p>
+          <h2 class="search-result__title">
+            <a [routerLink]="linkFor(result)">{{ result.title }}</a>
+          </h2>
+          @if (result.snippet) {
+            <!--
+              The index marks the matched words with <em>. Binding through innerHTML renders the
+              emphasis instead of printing the tags, and Angular's sanitizer drops anything else the
+              snippet might carry.
+            -->
+            <p class="search-result__snippet" [innerHTML]="result.snippet"></p>
+          }
+          @if (result.taxonomyLabels.length) {
+            <ul class="service-tags search-result__tags">
+              @for (label of result.taxonomyLabels; track label) {
+                <li class="service-tag service-tag--neutral">{{ label }}</li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+
+    @if (lastPage() > 1) {
+      <nav class="search-pager" [attr.aria-label]="t().heading">
+        <button type="button" class="search-pager__button" [disabled]="page() <= 1" (click)="goToPage(page() - 1)">
+          {{ t().prev }}
+        </button>
+        <span class="search-pager__status">{{ page() }} / {{ lastPage() }}</span>
+        <button
+          type="button"
+          class="search-pager__button"
+          [disabled]="page() >= lastPage()"
+          (click)="goToPage(page() + 1)"
+        >{{ t().next }}</button>
+      </nav>
+    }
+  }
+</div>

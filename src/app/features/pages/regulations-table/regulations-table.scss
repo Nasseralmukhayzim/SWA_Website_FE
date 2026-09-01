@@ -1,0 +1,294 @@
+// Regulations table — Figma node 2961:46997. Logical properties throughout so the table mirrors for
+// English without a direction-specific rule.
+
+:host {
+  display: block;
+}
+
+// Search sits above the tabs, on the reading edge, 320px wide in the design.
+.regulations__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 320px;
+  max-width: 100%;
+  margin-block-end: var(--space-3xl);
+  padding-inline: var(--space-lg);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-white);
+
+  &:focus-within {
+    border-color: var(--color-border-primary);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-text-placeholder);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
+    border: 0;
+    background: none;
+    color: var(--color-text-default);
+    font: inherit;
+    font-size: var(--text-md-size);
+
+    &::placeholder {
+      color: var(--color-text-placeholder);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-search-cancel-button {
+      appearance: none;
+    }
+  }
+}
+
+.regulations__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-block-end: var(--space-3xl);
+}
+
+// The active tab is solid near-black in the design, the rest plain on the page.
+.regulations__tab {
+  height: 40px;
+  padding-inline: var(--space-xl);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-paragraph);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  cursor: pointer;
+
+  &:hover:not(.is-active) {
+    background: var(--color-bg-neutral-100);
+    color: var(--color-text-default);
+  }
+
+  &.is-active {
+    background: var(--color-bg-black);
+    color: var(--color-text-oncolor);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.regulations__table {
+  width: 100%;
+  border-collapse: collapse;
+  // Outlined in the design, not just ruled between rows.
+  border: 1px solid var(--color-border-neutral);
+  // Long Arabic titles wrap rather than forcing the table wider than its column.
+  table-layout: fixed;
+
+  th,
+  td {
+    text-align: start;
+    padding: var(--space-md) var(--space-xl);
+    vertical-align: middle;
+  }
+
+  // 48px header on 64px rows, as the design sizes them. `height` is a minimum on table cells, so a
+  // title that wraps to two lines still grows its row rather than being clipped.
+  thead th {
+    height: 48px;
+    background: var(--color-bg-neutral-100);
+    color: var(--color-text-paragraph);
+    font-size: var(--text-sm-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  tbody td {
+    height: 64px;
+  }
+
+  tbody tr {
+    border-block-end: 1px solid var(--color-border-neutral);
+  }
+
+  // The table's own border closes the last row, so its divider would double the line.
+  tbody tr:last-child {
+    border-block-end: 0;
+  }
+}
+
+.regulations__col-title {
+  width: 46%;
+}
+
+.regulations__col-category {
+  width: 34%;
+}
+
+.regulations__col-action {
+  width: 20%;
+}
+
+.regulations__title {
+  color: var(--color-text-display);
+  font-size: var(--text-md-size);
+  line-height: var(--text-md-line);
+}
+
+// The category chips reuse the shared tag tones; the table only picks which tone applies.
+.regulations__category {
+  white-space: normal;
+}
+
+// A solid dark button in the design — 79x32 with a PDF mark after the label, which puts the mark on
+// the far edge in Arabic and the near one in English.
+.regulations__download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 32px;
+  gap: var(--space-md);
+  padding-inline: var(--space-lg);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-black);
+  color: var(--color-text-oncolor);
+  text-decoration: none;
+  font-size: var(--text-sm-size);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+
+  svg {
+    width: 16px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: var(--color-bg-dark);
+  }
+
+  // Nothing attached yet: kept in place so the column does not jump, but visibly inert.
+  &.is-unavailable {
+    background: var(--color-bg-neutral-200);
+    color: var(--color-text-disabled);
+    cursor: default;
+  }
+}
+
+.regulations__state {
+  padding-block: var(--space-4xl);
+  color: var(--color-text-paragraph);
+  font-size: var(--text-md-size);
+}
+
+// Pagination — page numbers run high-to-low, the current one underlined in green.
+.regulations__pager {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-block-start: var(--space-3xl);
+}
+
+.regulations__page {
+  min-width: 32px;
+  height: 32px;
+  padding-inline: var(--space-md);
+  border: 0;
+  border-block-end: 2px solid transparent;
+  background: none;
+  color: var(--color-text-paragraph);
+  font: inherit;
+  font-size: var(--text-sm-size);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &.is-current {
+    border-block-end-color: var(--color-primary-600);
+    color: var(--color-text-display);
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+// The chevrons are drawn pointing as Arabic needs them; English mirrors both.
+:host-context([dir='ltr']) .regulations__page-step svg {
+  transform: scaleX(-1);
+}
+
+.regulations__page-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-paragraph);
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:disabled {
+    color: var(--color-text-disabled);
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    background: var(--color-bg-neutral-100);
+    color: var(--color-text-default);
+  }
+}
+
+// Narrow screens: the action column carries only an icon-sized label, so the table can shed the
+// category column before it starts scrolling sideways.
+@media (max-width: 700px) {
+  .regulations__table {
+    th,
+    td {
+      padding: var(--space-md) var(--space-lg);
+    }
+  }
+
+  .regulations__col-category,
+  .regulations__category {
+    display: none;
+  }
+
+  .regulations__col-title {
+    width: 70%;
+  }
+
+  .regulations__col-action {
+    width: 30%;
+  }
+}
+
+// On the narrowest phones the action is the icon alone — "Download" is wider than its Arabic
+// counterpart and would otherwise push the icon past the edge. The link keeps its full name for
+// assistive tech through aria-label.
+@media (max-width: 420px) {
+  .regulations__download-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}

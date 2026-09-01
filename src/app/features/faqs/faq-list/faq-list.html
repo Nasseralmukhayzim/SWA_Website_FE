@@ -15,7 +15,7 @@
               {{ faq.question }}
             </button>
             @if (openId() === faq.id) {
-              <div class="faq-item__answer">{{ faq.answer }}</div>
+              <div class="faq-item__answer rich-text" [innerHTML]="faq.answer"></div>
             }
           </div>
         }

@@ -53,7 +53,7 @@
             <a [routerLink]="['/news', item.slug]">{{ item.title }}</a>
           </h2>
           @if (item.summary) {
-            <p class="news-card__summary">{{ item.summary }}</p>
+            <div class="news-card__summary rich-text" [innerHTML]="item.summary"></div>
           }
           <p class="news-card__date"><span class="tag">{{ formatDate(item) }}</span></p>
           <a class="news-card__more" [routerLink]="['/news', item.slug]">{{ t().readMore }}</a>

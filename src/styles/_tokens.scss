@@ -20,6 +20,8 @@
   --color-text-info: #1849a9;
   // Tag/tag-text-success — the service-category tag on a service page
   --color-text-success: #085d3a;
+  // Tag/tag-text-warning — the decisions tag on the regulations table
+  --color-text-warning: #93370d;
 
   // Backgrounds
   --color-bg-body: #f9fafb;
@@ -42,6 +44,8 @@
   --color-bg-success-50: #ecfdf3;
   // The pale green medallion behind card and figure pictograms
   --color-bg-success-25: #f3fcf6;
+  // Tag/tag-background-warning-light — the decisions tag on the regulations table
+  --color-bg-warning-50: #fffaeb;
 
   // Borders
   --color-border-neutral: #d2d6db;
@@ -50,6 +54,7 @@
   // Tag borders, one per tone (Tag/tag-border-*)
   --color-border-success-200: #abefc6;
   --color-border-info-200: #b2ddff;
+  --color-border-warning-200: #fedf89;
 
   // Icon
   --color-icon-default: #161616;
